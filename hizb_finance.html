@@ -367,7 +367,24 @@ textarea{resize:vertical;min-height:58px}
 .user-del-btn{background:transparent;border:1px solid rgba(193,18,31,.25);border-radius:7px;padding:4px 10px;color:var(--red-l);font-size:11px;cursor:pointer;transition:all .2s;font-family:var(--arabic)}
 .user-del-btn:hover{background:rgba(193,18,31,.12)}
 .set-full{grid-column:1/-1}
-.set-profile-box{display:flex;align-items:center;gap:14px;padding:14px;background:var(--bg);border:1px solid var(--bdr);border-radius:12px;margin-bottom:16px}
+
+/* ─── GROUPS ─── */
+.grp-card{background:var(--bg);border:1px solid var(--bdr);border-radius:12px;margin-bottom:12px;overflow:hidden}
+.grp-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--s2)}
+.grp-name{font-size:14px;font-weight:700;color:var(--gold);font-family:var(--arabic);display:flex;align-items:center;gap:8px}
+.grp-del-btn{background:transparent;border:1px solid rgba(193,18,31,.3);border-radius:7px;padding:4px 10px;color:var(--red-l);font-size:11px;cursor:pointer;transition:all .2s;font-family:var(--arabic)}
+.grp-del-btn:hover{background:rgba(193,18,31,.12)}
+.grp-body{padding:12px 14px}
+.grp-members{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px;min-height:28px}
+.grp-member-chip{display:flex;align-items:center;gap:6px;background:var(--s3);border:1px solid var(--bdr2);border-radius:20px;padding:4px 10px;font-size:12px;font-family:var(--arabic);color:var(--txt)}
+.grp-member-chip .remove-member{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:0 2px;line-height:1;transition:color .2s}
+.grp-member-chip .remove-member:hover{color:var(--red-l)}
+.grp-add-row{display:flex;gap:8px;align-items:center}
+.grp-add-row select{flex:1;background:var(--bg);border:1px solid var(--bdr);border-radius:9px;padding:8px 12px;color:var(--txt);font-family:var(--arabic);font-size:13px;outline:none}
+.grp-add-btn{padding:8px 14px;background:rgba(212,160,23,.15);border:1px solid var(--gold-d);border-radius:9px;color:var(--gold);font-family:var(--arabic);font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .2s}
+.grp-add-btn:hover{background:rgba(212,160,23,.25)}
+.grp-empty{color:var(--muted2);font-size:12px;font-style:italic;font-family:var(--arabic)}
+.user-group-badge{font-size:10px;padding:2px 8px;border-radius:10px;background:rgba(212,160,23,.12);color:var(--gold);border:1px solid rgba(212,160,23,.25)}.set-profile-box{display:flex;align-items:center;gap:14px;padding:14px;background:var(--bg);border:1px solid var(--bdr);border-radius:12px;margin-bottom:16px}
 .set-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--red-d),var(--red));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:2px solid rgba(193,18,31,.3)}
 .set-profile-info{flex:1}
 .set-profile-name{font-size:15px;font-weight:700;color:var(--txt);font-family:var(--arabic)}
@@ -855,6 +872,25 @@ textarea{resize:vertical;min-height:58px}
         <button class="set-btn set-btn-red" onclick="sAddUser()" data-ar="إضافة مستخدم +" data-en="Add User +">إضافة مستخدم +</button>
       </div>
 
+      <!-- إدارة المجموعات (admin only) -->
+      <div class="set-card set-full" id="groupsCard" style="display:none">
+        <div class="set-card-title">👥 <span>إدارة المجموعات المشتركة</span></div>
+        <div class="admin-badge">يوزرات في نفس المجموعة يشاركوا نفس البيانات المالية</div>
+        <div class="set-msg" id="sMsgGroups"></div>
+
+        <!-- Create group -->
+        <div style="display:flex;gap:8px;margin-bottom:16px;align-items:flex-end">
+          <div style="flex:1">
+            <span class="set-label">اسم المجموعة الجديدة</span>
+            <input class="set-input" type="text" id="sNewGroupName" placeholder="مثال: فريق المبيعات" style="margin-bottom:0"/>
+          </div>
+          <button class="set-btn set-btn-gold" style="width:auto;padding:11px 18px;white-space:nowrap" onclick="sCreateGroup()">+ إنشاء</button>
+        </div>
+
+        <!-- Groups list -->
+        <div id="sGroupsList"></div>
+      </div>
+
     </div>
   </div>
 
@@ -1244,6 +1280,8 @@ async function tryLogin() {
     currentUser = data.username;
     currentRole = data.role;
     localStorage.setItem('hizb_user', currentUser);
+    if (data.group) localStorage.setItem('hizb_group', JSON.stringify(data.group));
+    else localStorage.removeItem('hizb_group');
     err.textContent = '';
     showApp();
   } catch(e) {
@@ -1267,7 +1305,10 @@ function showApp() {
   const lp = document.getElementById('loginPage');
   lp.classList.add('hiding');
   setTimeout(() => { lp.style.display='none'; }, 600);
-  document.getElementById('userBadge').textContent = '👤 ' + currentUser;
+  const grpRaw = localStorage.getItem('hizb_group');
+  const grp = grpRaw ? JSON.parse(grpRaw) : null;
+  const groupBadge = grp ? ` · 👥 ${grp.name}` : '';
+  document.getElementById('userBadge').textContent = '👤 ' + currentUser + groupBadge;
   showLoading(true); loadData();
 }
 
@@ -2295,12 +2336,15 @@ function sInitProfile() {
     ? (lang==='ar' ? 'مدير النظام' : 'System Admin')
     : (lang==='ar' ? 'مستخدم' : 'User');
   document.getElementById('setAvatar').textContent = currentUser.charAt(0).toUpperCase();
-  const adminCard = document.getElementById('adminCard');
+  const adminCard  = document.getElementById('adminCard');
+  const groupsCard = document.getElementById('groupsCard');
   if (currentRole === 'admin') {
-    adminCard.style.display = 'block';
-    sLoadUsers();
+    adminCard.style.display  = 'block';
+    groupsCard.style.display = 'block';
+    sLoadGroups();
   } else {
-    adminCard.style.display = 'none';
+    adminCard.style.display  = 'none';
+    groupsCard.style.display = 'none';
   }
 }
 
@@ -2343,26 +2387,8 @@ async function sChangeUser() {
 }
 
 async function sLoadUsers() {
-  const r = await apiCall('GET', '/api/admin/users');
-  if (!r || !r.ok) return;
-  const users = await r.json();
-  const el = document.getElementById('sUsersList');
-  el.innerHTML = '';
-  users.forEach(u => {
-    const row = document.createElement('div');
-    row.className = 'user-row';
-    const isMe = u.username === currentUser;
-    row.innerHTML = `
-      <div class="user-row-name">
-        <span>👤</span>
-        <span>${u.username}</span>
-        <span class="user-role-badge ${u.role==='admin'?'admin':''}">${u.role}</span>
-        ${isMe ? `<span style="font-size:10px;color:var(--gold)">(${lang==='ar'?'أنت':'you'})</span>` : ''}
-      </div>
-      ${!isMe ? `<button class="user-del-btn" onclick="sDeleteUser(${u.id},'${u.username}')">${lang==='ar'?'حذف':'Delete'}</button>` : ''}
-    `;
-    el.appendChild(row);
-  });
+  // delegate to the new unified loader
+  await sLoadGroups();
 }
 
 async function sDeleteUser(uid, uname) {
@@ -2370,7 +2396,7 @@ async function sDeleteUser(uid, uname) {
   const r = await apiCall('DELETE', '/api/admin/users/' + uid);
   if (!r || !r.ok) { sShowMsg('sMsgAdmin', lang==='ar'?'فشل الحذف':'Delete failed', 'err'); return; }
   sShowMsg('sMsgAdmin', lang==='ar'?'تم حذف المستخدم ✓':'User deleted ✓', 'ok');
-  sLoadUsers();
+  sLoadGroups();
 }
 
 async function sAddUser() {
@@ -2386,7 +2412,138 @@ async function sAddUser() {
   document.getElementById('sNewUserName').value = '';
   document.getElementById('sNewUserPass').value = '';
   sShowMsg('sMsgAdmin', lang==='ar'?`تم إضافة "${uname}" بنجاح ✓`:`"${uname}" added successfully ✓`, 'ok');
-  sLoadUsers();
+  sLoadGroups();
+}
+
+/* ════════════════════════════════════════════
+   GROUPS MANAGEMENT (Admin)
+   ════════════════════════════════════════════ */
+let allUsersCache = [];
+let allGroupsCache = [];
+
+async function sLoadGroups() {
+  const [usersRes, groupsRes] = await Promise.all([
+    apiCall('GET', '/api/admin/users'),
+    apiCall('GET', '/api/admin/groups')
+  ]);
+  allUsersCache  = usersRes  && usersRes.ok  ? await usersRes.json()  : [];
+  allGroupsCache = groupsRes && groupsRes.ok ? await groupsRes.json() : [];
+  sRenderGroups();
+  // also refresh users list since it now shows group info
+  sRenderUsers();
+}
+
+function sRenderGroups() {
+  const el = document.getElementById('sGroupsList');
+  if (!el) return;
+  if (!allGroupsCache.length) {
+    el.innerHTML = '<div style="color:var(--muted2);font-size:13px;font-family:var(--arabic);text-align:center;padding:20px">لا توجد مجموعات بعد — أنشئ مجموعة جديدة</div>';
+    return;
+  }
+  el.innerHTML = '';
+  allGroupsCache.forEach(g => {
+    const card = document.createElement('div');
+    card.className = 'grp-card';
+    const memberChips = g.members.map(m => `
+      <div class="grp-member-chip">
+        <span>👤 ${m.username}</span>
+        <button class="remove-member" onclick="sRemoveMember(${g.id},${m.id},'${m.username}')" title="إزالة من المجموعة">✕</button>
+      </div>`).join('');
+
+    // users not in this group (for the add dropdown)
+    const membersInGroup = new Set(g.members.map(m => m.id));
+    const availableUsers = allUsersCache.filter(u => !membersInGroup.has(u.id));
+    const opts = availableUsers.map(u =>
+      `<option value="${u.id}">${u.username}${u.group ? ' (في: '+u.group.name+')' : ''}</option>`
+    ).join('');
+
+    card.innerHTML = `
+      <div class="grp-head">
+        <div class="grp-name">
+          <span>👥</span>
+          <span>${g.name}</span>
+          <span style="font-size:10px;color:var(--muted);font-family:var(--mono)">#${g.id} · ${g.members.length} أعضاء</span>
+        </div>
+        <button class="grp-del-btn" onclick="sDeleteGroup(${g.id},'${g.name}')">🗑 حذف المجموعة</button>
+      </div>
+      <div class="grp-body">
+        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-family:var(--arabic)">الأعضاء</div>
+        <div class="grp-members">
+          ${memberChips || '<span class="grp-empty">لا يوجد أعضاء بعد</span>'}
+        </div>
+        ${availableUsers.length ? `
+        <div class="grp-add-row">
+          <select id="grpAddSel_${g.id}">
+            <option value="">اختر يوزر لإضافته...</option>
+            ${opts}
+          </select>
+          <button class="grp-add-btn" onclick="sAddMember(${g.id})">+ إضافة</button>
+        </div>` : '<div style="font-size:11px;color:var(--muted2);font-family:var(--arabic)">كل اليوزرات موجودون في هذه المجموعة</div>'}
+      </div>
+    `;
+    el.appendChild(card);
+  });
+}
+
+function sRenderUsers() {
+  const el = document.getElementById('sUsersList');
+  if (!el) return;
+  el.innerHTML = '';
+  allUsersCache.forEach(u => {
+    const row = document.createElement('div');
+    row.className = 'user-row';
+    const isMe = u.username === currentUser;
+    const groupBadge = u.group
+      ? `<span class="user-group-badge">👥 ${u.group.name}</span>`
+      : `<span style="font-size:10px;color:var(--muted2)">بدون مجموعة</span>`;
+    row.innerHTML = `
+      <div class="user-row-name">
+        <span>👤</span>
+        <span>${u.username}</span>
+        <span class="user-role-badge ${u.role==='admin'?'admin':''}">${u.role}</span>
+        ${groupBadge}
+        ${isMe ? `<span style="font-size:10px;color:var(--gold)">(أنت)</span>` : ''}
+      </div>
+      ${!isMe ? `<button class="user-del-btn" onclick="sDeleteUser(${u.id},'${u.username}')">حذف</button>` : ''}
+    `;
+    el.appendChild(row);
+  });
+}
+
+async function sCreateGroup() {
+  const name = document.getElementById('sNewGroupName').value.trim();
+  if (!name) { sShowMsg('sMsgGroups', 'أدخل اسم المجموعة', 'err'); return; }
+  const r = await apiCall('POST', '/api/admin/groups', {name});
+  if (!r || !r.ok) { sShowMsg('sMsgGroups', 'فشل الإنشاء', 'err'); return; }
+  document.getElementById('sNewGroupName').value = '';
+  sShowMsg('sMsgGroups', `تم إنشاء مجموعة "${name}" ✓`, 'ok');
+  sLoadGroups();
+}
+
+async function sDeleteGroup(gid, name) {
+  if (!confirm(`حذف مجموعة "${name}"؟ اليوزرات مش هيتحذفوا بس هيتفكوا من المجموعة.`)) return;
+  const r = await apiCall('DELETE', `/api/admin/groups/${gid}`);
+  if (!r || !r.ok) { sShowMsg('sMsgGroups', 'فشل الحذف', 'err'); return; }
+  sShowMsg('sMsgGroups', 'تم حذف المجموعة', 'ok');
+  sLoadGroups();
+}
+
+async function sAddMember(gid) {
+  const sel = document.getElementById(`grpAddSel_${gid}`);
+  const uid = parseInt(sel?.value);
+  if (!uid) { sShowMsg('sMsgGroups', 'اختر يوزر أولاً', 'err'); return; }
+  const r = await apiCall('PUT', `/api/admin/users/${uid}/group`, {group_id: gid});
+  if (!r || !r.ok) { sShowMsg('sMsgGroups', 'فشل الإضافة', 'err'); return; }
+  sShowMsg('sMsgGroups', 'تمت الإضافة ✓', 'ok');
+  sLoadGroups();
+}
+
+async function sRemoveMember(gid, uid, uname) {
+  if (!confirm(`إزالة "${uname}" من المجموعة؟`)) return;
+  const r = await apiCall('PUT', `/api/admin/users/${uid}/group`, {group_id: null});
+  if (!r || !r.ok) { sShowMsg('sMsgGroups', 'فشل الإزالة', 'err'); return; }
+  sShowMsg('sMsgGroups', `تمت إزالة "${uname}" من المجموعة`, 'ok');
+  sLoadGroups();
 }
 
 spawnParticles();
