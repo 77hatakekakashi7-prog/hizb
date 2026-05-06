@@ -331,6 +331,89 @@ textarea{resize:vertical;min-height:58px}
 .vlt-fi:hover,.vlt-fi.sel{border-color:var(--gold);background:rgba(212,160,23,.1);transform:scale(1.15)}
 @keyframes vltShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
 
+/* ─── FLOATING CALCULATOR ─── */
+#floatCalcTrigger{
+  position:fixed;bottom:28px;left:28px;z-index:400;
+  width:52px;height:52px;border-radius:50%;
+  background:linear-gradient(135deg,var(--red-d),var(--red));
+  border:1px solid rgba(193,18,31,.4);
+  color:#fff;font-size:22px;cursor:pointer;
+  box-shadow:0 4px 20px rgba(193,18,31,.4),0 0 0 0 rgba(193,18,31,.3);
+  transition:transform .2s cubic-bezier(.22,.68,0,1.2),box-shadow .2s;
+  display:flex;align-items:center;justify-content:center;
+  animation:calcPulse 3s ease-in-out infinite;
+}
+@keyframes calcPulse{
+  0%,100%{box-shadow:0 4px 20px rgba(193,18,31,.4),0 0 0 0 rgba(193,18,31,.2)}
+  50%{box-shadow:0 4px 28px rgba(193,18,31,.5),0 0 0 8px rgba(193,18,31,0)}
+}
+#floatCalcTrigger:hover{transform:scale(1.12) rotate(-8deg);animation:none;box-shadow:0 6px 28px rgba(193,18,31,.55)}
+#floatCalcTrigger:active{transform:scale(.94)}
+#floatCalcTrigger .fc-tooltip{
+  position:absolute;left:62px;top:50%;transform:translateY(-50%);
+  background:var(--s1);border:1px solid var(--bdr2);border-radius:8px;
+  padding:5px 11px;font-size:11px;color:var(--gold);font-family:var(--arabic);
+  white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s;
+  box-shadow:var(--shadow);
+}
+#floatCalcTrigger:hover .fc-tooltip{opacity:1}
+
+#floatCalcPanel{
+  position:fixed;bottom:92px;left:28px;z-index:401;
+  width:290px;
+  background:var(--s1);border:1px solid var(--bdr2);border-radius:20px;
+  box-shadow:0 16px 48px rgba(0,0,0,.6),0 0 0 1px rgba(212,160,23,.06);
+  overflow:hidden;
+  transform:scale(.85) translateY(20px);transform-origin:bottom left;
+  opacity:0;pointer-events:none;
+  transition:transform .3s cubic-bezier(.22,.68,0,1.2),opacity .25s ease;
+}
+#floatCalcPanel.open{
+  transform:scale(1) translateY(0);opacity:1;pointer-events:all;
+}
+#floatCalcPanel::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold),var(--red),transparent);
+}
+.fc-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px 8px;
+  font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-family:var(--arabic);
+  cursor:move;user-select:none;
+}
+.fc-header-left{display:flex;align-items:center;gap:7px}
+.fc-close{background:transparent;border:none;color:var(--muted);font-size:15px;cursor:pointer;padding:2px 5px;border-radius:6px;transition:all .2s;line-height:1}
+.fc-close:hover{background:rgba(193,18,31,.15);color:var(--red-l)}
+.fc-display{
+  background:var(--bg);margin:0 12px 10px;border-radius:12px;
+  padding:10px 14px;border:1px solid var(--bdr);
+  direction:ltr;text-align:right;
+}
+.fc-expr{font-family:var(--mono);font-size:11px;color:var(--muted);min-height:16px}
+.fc-val{font-family:var(--mono);font-size:28px;font-weight:500;color:var(--txt);transition:color .2s}
+.fc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:0 12px 14px}
+.fc-btn{
+  padding:13px 4px;border-radius:10px;border:1px solid var(--bdr);
+  background:var(--s2);color:var(--txt);font-family:var(--mono);font-size:14px;
+  cursor:pointer;transition:all .15s;font-weight:500;
+}
+.fc-btn:hover{background:var(--s3);border-color:var(--gold-d)}
+.fc-btn:active{transform:scale(.92)}
+.fc-btn.fc-op{color:var(--gold-l);background:rgba(212,160,23,.07);border-color:rgba(212,160,23,.2)}
+.fc-btn.fc-op:hover{background:rgba(212,160,23,.15)}
+.fc-btn.fc-eq{background:linear-gradient(135deg,var(--red-d),var(--red));border-color:var(--red);color:#fff}
+.fc-btn.fc-eq:hover{opacity:.9}
+.fc-btn.fc-cl{color:var(--red-l)}
+.fc-btn.fc-w2{grid-column:span 2}
+.fc-use-btn{
+  margin:0 12px 12px;width:calc(100% - 24px);
+  padding:10px;background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.3);
+  border-radius:10px;color:var(--gold);font-family:var(--arabic);font-size:12px;font-weight:700;
+  cursor:pointer;transition:all .2s;letter-spacing:.5px;
+}
+.fc-use-btn:hover{background:rgba(212,160,23,.2);border-color:var(--gold)}
+
+
 /* ─── SETTINGS ─── */
 .set-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media(max-width:580px){.set-grid{grid-template-columns:1fr}}
@@ -1051,7 +1134,180 @@ textarea{resize:vertical;min-height:58px}
   </div>
 </div>
 
+<!-- FLOATING CALCULATOR TRIGGER -->
+<button id="floatCalcTrigger" onclick="fcToggle()">
+  🧮
+  <span class="fc-tooltip">الحاسبة العائمة</span>
+</button>
+
+<!-- FLOATING CALCULATOR PANEL -->
+<div id="floatCalcPanel">
+  <div class="fc-header" id="fcDragHandle">
+    <div class="fc-header-left">
+      <span>🧮</span>
+      <span>الحاسبة</span>
+    </div>
+    <button class="fc-close" onclick="fcToggle()">✕</button>
+  </div>
+  <div class="fc-display">
+    <div class="fc-expr" id="fcExpr"></div>
+    <div class="fc-val" id="fcVal">0</div>
+  </div>
+  <div class="fc-grid">
+    <button class="fc-btn fc-cl" onclick="fcClr()">AC</button>
+    <button class="fc-btn fc-op" onclick="fcSign()">+/-</button>
+    <button class="fc-btn fc-op" onclick="fcPct()">%</button>
+    <button class="fc-btn fc-op" onclick="fcOp('/')">÷</button>
+    <button class="fc-btn" onclick="fcN('7')">7</button>
+    <button class="fc-btn" onclick="fcN('8')">8</button>
+    <button class="fc-btn" onclick="fcN('9')">9</button>
+    <button class="fc-btn fc-op" onclick="fcOp('*')">×</button>
+    <button class="fc-btn" onclick="fcN('4')">4</button>
+    <button class="fc-btn" onclick="fcN('5')">5</button>
+    <button class="fc-btn" onclick="fcN('6')">6</button>
+    <button class="fc-btn fc-op" onclick="fcOp('-')">−</button>
+    <button class="fc-btn" onclick="fcN('1')">1</button>
+    <button class="fc-btn" onclick="fcN('2')">2</button>
+    <button class="fc-btn" onclick="fcN('3')">3</button>
+    <button class="fc-btn fc-op" onclick="fcOp('+')">+</button>
+    <button class="fc-btn fc-w2" onclick="fcN('0')">0</button>
+    <button class="fc-btn" onclick="fcDot()">.</button>
+    <button class="fc-btn fc-eq" onclick="fcEq()">=</button>
+  </div>
+  <button class="fc-use-btn" onclick="fcUse()">★ استخدام الناتج في عملية</button>
+</div>
+
 <script>
+/* ════════════════════════════════════════════
+   FLOATING CALCULATOR
+   ════════════════════════════════════════════ */
+let fcOpen = false;
+let fc_Val='0', fc_Expr='', fc_Prev=null, fc_Oper=null, fc_New=false;
+
+function fcToggle() {
+  fcOpen = !fcOpen;
+  document.getElementById('floatCalcPanel').classList.toggle('open', fcOpen);
+  if (fcOpen) fcUpdateDisplay();
+}
+
+function fcUpdateDisplay() {
+  document.getElementById('fcVal').textContent = fc_Val;
+  document.getElementById('fcExpr').textContent = fc_Expr;
+}
+
+function fcN(n) {
+  if (fc_New) { fc_Val=n; fc_New=false; }
+  else { fc_Val = fc_Val==='0' ? n : fc_Val+n; }
+  fcUpdateDisplay();
+}
+function fcDot() {
+  if (fc_New) { fc_Val='0.'; fc_New=false; }
+  else if (!fc_Val.includes('.')) fc_Val+='.';
+  fcUpdateDisplay();
+}
+function fcOp(op) {
+  fc_Prev = parseFloat(fc_Val);
+  fc_Oper = op;
+  fc_Expr = fc_Val+' '+(op==='*'?'×':op==='/'?'÷':op)+' ';
+  fc_New = true;
+  fcUpdateDisplay();
+}
+function fcEq() {
+  if (fc_Prev===null||!fc_Oper) return;
+  const cur = parseFloat(fc_Val);
+  let r;
+  if (fc_Oper==='+') r=fc_Prev+cur;
+  else if (fc_Oper==='-') r=fc_Prev-cur;
+  else if (fc_Oper==='*') r=fc_Prev*cur;
+  else if (fc_Oper==='/') r=cur?fc_Prev/cur:0;
+  fc_Expr = fc_Expr + fc_Val + ' =';
+  fc_Val = parseFloat(r.toFixed(10)).toString();
+  fc_Prev=null; fc_Oper=null; fc_New=true;
+  // flash green on result
+  const vEl = document.getElementById('fcVal');
+  vEl.style.color='var(--green-l)';
+  setTimeout(()=>vEl.style.color='',500);
+  fcUpdateDisplay();
+}
+function fcClr() {
+  fc_Val='0'; fc_Expr=''; fc_Prev=null; fc_Oper=null; fc_New=false;
+  document.getElementById('fcVal').style.color='';
+  fcUpdateDisplay();
+}
+function fcSign() { fc_Val=(parseFloat(fc_Val)*-1).toString(); fcUpdateDisplay(); }
+function fcPct()  { fc_Val=(parseFloat(fc_Val)/100).toString(); fcUpdateDisplay(); }
+
+function fcUse() {
+  const v = parseFloat(fc_Val);
+  if (isNaN(v)||v<=0) { showToast(t('toastCalc')); return; }
+  document.getElementById('txAmt').value = Math.abs(v).toFixed(2);
+  // Switch to transactions tab
+  document.querySelectorAll('.ntab').forEach(b => {
+    if (b.dataset.ar==='💳 العمليات') b.click();
+  });
+  document.getElementById('txAmt').focus();
+  fcToggle(); // close the panel
+  showToast('★ تم نقل المبلغ للعملية', 'ok');
+}
+
+// ── Drag to move the panel ──
+(function() {
+  let dragging=false, startX, startY, origLeft, origBottom;
+  const handle = ()=>document.getElementById('fcDragHandle');
+  const panel  = ()=>document.getElementById('floatCalcPanel');
+
+  document.addEventListener('mousedown', e => {
+    if (!handle().contains(e.target)||e.target.classList.contains('fc-close')) return;
+    dragging=true;
+    const p=panel();
+    const rect=p.getBoundingClientRect();
+    startX=e.clientX; startY=e.clientY;
+    origLeft=rect.left;
+    origBottom=window.innerHeight-rect.bottom;
+    p.style.transition='none';
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const dx=e.clientX-startX, dy=e.clientY-startY;
+    const p=panel();
+    const newLeft=Math.max(0,Math.min(window.innerWidth-p.offsetWidth, origLeft+dx));
+    const newBottom=Math.max(0,Math.min(window.innerHeight-p.offsetHeight, origBottom-dy));
+    p.style.left=newLeft+'px';
+    p.style.bottom=newBottom+'px';
+    p.style.right='auto';
+  });
+  document.addEventListener('mouseup', ()=>{
+    if (dragging) { dragging=false; panel().style.transition=''; }
+  });
+
+  // Touch drag support
+  document.addEventListener('touchstart', e => {
+    if (!handle().contains(e.target)||e.target.classList.contains('fc-close')) return;
+    dragging=true;
+    const p=panel();
+    const rect=p.getBoundingClientRect();
+    const t2=e.touches[0];
+    startX=t2.clientX; startY=t2.clientY;
+    origLeft=rect.left; origBottom=window.innerHeight-rect.bottom;
+    p.style.transition='none';
+    e.preventDefault();
+  },{passive:false});
+  document.addEventListener('touchmove', e => {
+    if (!dragging) return;
+    const t2=e.touches[0];
+    const dx=t2.clientX-startX, dy=t2.clientY-startY;
+    const p=panel();
+    const newLeft=Math.max(0,Math.min(window.innerWidth-p.offsetWidth, origLeft+dx));
+    const newBottom=Math.max(0,Math.min(window.innerHeight-p.offsetHeight, origBottom-dy));
+    p.style.left=newLeft+'px';
+    p.style.bottom=newBottom+'px';
+    p.style.right='auto';
+    e.preventDefault();
+  },{passive:false});
+  document.addEventListener('touchend', ()=>{ if(dragging){dragging=false; panel().style.transition='';} });
+})();
+
 /* ════════════════════════════════════════════
    LANGUAGE & THEME SYSTEM
    ════════════════════════════════════════════ */
