@@ -431,8 +431,10 @@ def admin_delete_user(uid):
         db.commit()
     return jsonify({'ok': True})
 
+# ─── init at import time (runs under gunicorn too) ──────────────────
+init_db()
+
 if __name__ == '__main__':
-    init_db()
     port = int(os.environ.get('PORT', 5000))
     debug = os.environ.get('DEBUG', 'true').lower() == 'true'
     print(f'\n★  الحزب الاشتراكى Finance Server v2.0')
