@@ -331,7 +331,47 @@ textarea{resize:vertical;min-height:58px}
 .vlt-fi:hover,.vlt-fi.sel{border-color:var(--gold);background:rgba(212,160,23,.1);transform:scale(1.15)}
 @keyframes vltShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
 
-/* ─── CURRENCY CONVERTER ─── */
+/* ─── SETTINGS ─── */
+.set-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:580px){.set-grid{grid-template-columns:1fr}}
+.set-card{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.set-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.set-card.danger::before{background:linear-gradient(90deg,transparent,var(--red),transparent)}
+.set-card-title{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;font-family:var(--arabic);display:flex;align-items:center;gap:8px}
+.set-card.danger .set-card-title{color:var(--red-l)}
+.set-input{width:100%;background:var(--bg);border:1px solid var(--bdr);border-radius:10px;padding:11px 14px;color:var(--txt);font-family:var(--arabic);font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s;margin-bottom:12px}
+.set-input:focus{border-color:var(--gold-d);box-shadow:0 0 0 3px rgba(212,160,23,.07)}
+.set-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;font-family:var(--arabic);display:block}
+.set-btn{width:100%;padding:11px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:opacity .2s,transform .15s;font-family:var(--arabic);letter-spacing:.5px}
+.set-btn:active{transform:scale(.98)}
+.set-btn-gold{background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#1A1208}
+.set-btn-gold:hover{opacity:.9}
+.set-btn-red{background:linear-gradient(135deg,var(--red-d),var(--red));color:#fff;box-shadow:0 4px 14px rgba(193,18,31,.25)}
+.set-btn-red:hover{opacity:.9}
+.set-btn-outline{background:transparent;border:1px solid var(--bdr2);color:var(--muted);margin-top:8px}
+.set-btn-outline:hover{border-color:var(--bdr3);color:var(--txt)}
+.set-msg{padding:9px 14px;border-radius:9px;font-size:12px;margin-bottom:12px;display:none;font-family:var(--arabic)}
+.set-msg.ok{background:rgba(21,128,61,.15);border:1px solid rgba(34,197,94,.3);color:var(--green-l);display:block}
+.set-msg.err{background:rgba(193,18,31,.12);border:1px solid rgba(193,18,31,.3);color:var(--red-l);display:block}
+.set-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:16px}
+.set-tab{padding:9px;border-radius:9px;border:1px solid var(--bdr);background:transparent;color:var(--muted);font-family:var(--arabic);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center}
+.set-tab.on{background:rgba(212,160,23,.12);border-color:var(--gold-d);color:var(--gold)}
+.set-tab:hover:not(.on){border-color:var(--bdr2);color:var(--txt)}
+.set-panel{display:none}.set-panel.on{display:block}
+.set-divider{height:1px;background:var(--bdr);margin:14px 0}
+.admin-badge{display:inline-block;background:rgba(193,18,31,.15);border:1px solid rgba(193,18,31,.3);border-radius:20px;padding:3px 12px;font-size:11px;color:var(--red-l);margin-bottom:14px;font-family:var(--arabic)}
+.user-row{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--bg);border:1px solid var(--bdr);border-radius:9px;margin-bottom:6px;font-family:var(--arabic);font-size:13px}
+.user-row-name{color:var(--txt);display:flex;align-items:center;gap:8px}
+.user-role-badge{font-size:10px;padding:2px 8px;border-radius:10px;background:var(--s3);color:var(--muted)}
+.user-role-badge.admin{background:rgba(193,18,31,.15);color:var(--red-l)}
+.user-del-btn{background:transparent;border:1px solid rgba(193,18,31,.25);border-radius:7px;padding:4px 10px;color:var(--red-l);font-size:11px;cursor:pointer;transition:all .2s;font-family:var(--arabic)}
+.user-del-btn:hover{background:rgba(193,18,31,.12)}
+.set-full{grid-column:1/-1}
+.set-profile-box{display:flex;align-items:center;gap:14px;padding:14px;background:var(--bg);border:1px solid var(--bdr);border-radius:12px;margin-bottom:16px}
+.set-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--red-d),var(--red));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:2px solid rgba(193,18,31,.3)}
+.set-profile-info{flex:1}
+.set-profile-name{font-size:15px;font-weight:700;color:var(--txt);font-family:var(--arabic)}
+.set-profile-role{font-size:11px;color:var(--muted);margin-top:2px;font-family:var(--arabic)}
 .fx-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
 @media(max-width:560px){.fx-grid{grid-template-columns:1fr}}
 .fx-card{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);transition:border-color .2s}
@@ -433,6 +473,7 @@ textarea{resize:vertical;min-height:58px}
     <button class="ntab" onclick="sw('vault',this)" data-ar="🔐 الحسابات" data-en="🔐 Vault">🔐 الحسابات</button>
     <button class="ntab" onclick="sw('goals',this)" data-ar="🎯 الأهداف" data-en="🎯 Goals">🎯 الأهداف</button>
     <button class="ntab" onclick="sw('history',this)" data-ar="🗂 التاريخ" data-en="🗂 History">🗂 التاريخ</button>
+    <button class="ntab" onclick="sw('settings',this)" data-ar="⚙️ الإعدادات" data-en="⚙️ Settings">⚙️ الإعدادات</button>
   </div>
 
   <!-- DASHBOARD -->
@@ -742,6 +783,78 @@ textarea{resize:vertical;min-height:58px}
     <div style="background:var(--s1);border:1px solid var(--bdr);border-radius:var(--radius);padding:18px">
       <div class="chart-title" data-ar="مقارنة الدخل / المصروف / الهدف" data-en="INCOME / EXPENSE / GOAL COMPARISON">مقارنة الدخل / المصروف / الهدف</div>
       <canvas id="goalChart" height="120"></canvas>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div id="tc-settings" class="tc">
+
+    <!-- Profile box -->
+    <div class="set-profile-box">
+      <div class="set-avatar" id="setAvatar">★</div>
+      <div class="set-profile-info">
+        <div class="set-profile-name" id="setProfileName">—</div>
+        <div class="set-profile-role" id="setProfileRole">—</div>
+      </div>
+    </div>
+
+    <div class="set-grid">
+
+      <!-- تغيير البيانات الشخصية -->
+      <div class="set-card">
+        <div class="set-card-title">⚙️ <span data-ar="تغيير بياناتك" data-en="Account Settings">تغيير بياناتك</span></div>
+
+        <div class="set-tabs">
+          <div class="set-tab on" id="sTabPass" onclick="sSwitch('pass')">🔑 <span data-ar="الباسورد" data-en="Password">الباسورد</span></div>
+          <div class="set-tab" id="sTabUser" onclick="sSwitch('user')">✏️ <span data-ar="اليوزر" data-en="Username">اليوزر</span></div>
+        </div>
+
+        <!-- Panel: Change Password -->
+        <div class="set-panel on" id="sPanelPass">
+          <div class="set-msg" id="sMsgPass"></div>
+          <span class="set-label" data-ar="كلمة المرور الحالية" data-en="Current Password">كلمة المرور الحالية</span>
+          <input class="set-input" type="password" id="sOldPass" placeholder="••••••••"/>
+          <span class="set-label" data-ar="كلمة المرور الجديدة" data-en="New Password">كلمة المرور الجديدة</span>
+          <input class="set-input" type="password" id="sNewPass" placeholder="6 أحرف على الأقل"/>
+          <span class="set-label" data-ar="تأكيد كلمة المرور" data-en="Confirm Password">تأكيد كلمة المرور</span>
+          <input class="set-input" type="password" id="sConfPass" placeholder="أعد الكتابة" onkeydown="if(event.key==='Enter')sChangePass()"/>
+          <button class="set-btn set-btn-gold" onclick="sChangePass()" data-ar="تغيير كلمة المرور ★" data-en="Change Password ★">تغيير كلمة المرور ★</button>
+        </div>
+
+        <!-- Panel: Change Username -->
+        <div class="set-panel" id="sPanelUser">
+          <div class="set-msg" id="sMsgUser"></div>
+          <span class="set-label" data-ar="اسم المستخدم الجديد" data-en="New Username">اسم المستخدم الجديد</span>
+          <input class="set-input" type="text" id="sNewUser" placeholder="3 أحرف على الأقل"/>
+          <span class="set-label" data-ar="كلمة المرور (للتأكيد)" data-en="Password (Confirm)">كلمة المرور (للتأكيد)</span>
+          <input class="set-input" type="password" id="sConfUser" placeholder="••••••••" onkeydown="if(event.key==='Enter')sChangeUser()"/>
+          <button class="set-btn set-btn-gold" onclick="sChangeUser()" data-ar="تغيير اسم المستخدم ★" data-en="Change Username ★">تغيير اسم المستخدم ★</button>
+        </div>
+      </div>
+
+      <!-- إدارة المستخدمين (admin only) -->
+      <div class="set-card danger" id="adminCard" style="display:none">
+        <div class="set-card-title">🛡 <span data-ar="إدارة المستخدمين" data-en="User Management">إدارة المستخدمين</span></div>
+        <div class="admin-badge" data-ar="Admin فقط" data-en="Admin Only">Admin فقط</div>
+
+        <div class="set-msg" id="sMsgAdmin"></div>
+
+        <!-- Users list -->
+        <div id="sUsersList" style="margin-bottom:14px"></div>
+
+        <div class="set-divider"></div>
+
+        <!-- Add new user -->
+        <span class="set-label" data-ar="إضافة مستخدم جديد" data-en="Add New User">إضافة مستخدم جديد</span>
+        <input class="set-input" type="text" id="sNewUserName" data-ar-placeholder="اسم المستخدم" data-en-placeholder="Username" placeholder="اسم المستخدم"/>
+        <input class="set-input" type="password" id="sNewUserPass" data-ar-placeholder="كلمة المرور" data-en-placeholder="Password" placeholder="كلمة المرور"/>
+        <select class="set-input" id="sNewUserRole" style="margin-bottom:12px">
+          <option value="user" data-ar="مستخدم عادي" data-en="Regular User">مستخدم عادي</option>
+          <option value="admin">Admin</option>
+        </select>
+        <button class="set-btn set-btn-red" onclick="sAddUser()" data-ar="إضافة مستخدم +" data-en="Add User +">إضافة مستخدم +</button>
+      </div>
+
     </div>
   </div>
 
@@ -1219,6 +1332,7 @@ function sw(name, el) {
   if(name==='goals') setTimeout(drawGoalChart,50);
   if(name==='currency') { fxConvert(); fxRenderGrid(); }
   if(name==='vault') vltInit();
+  if(name==='settings') sInitProfile();
 }
 
 function stype(tp) {
@@ -2156,6 +2270,125 @@ function spawnParticles(){
   for(let i=0;i<14;i++)spawn();
   setInterval(spawn,1600);
 }
+/* ════════════════════════════════════════════
+   SETTINGS TAB
+   ════════════════════════════════════════════ */
+function sSwitch(tab) {
+  document.getElementById('sTabPass').className = 'set-tab' + (tab==='pass'?' on':'');
+  document.getElementById('sTabUser').className = 'set-tab' + (tab==='user'?' on':'');
+  document.getElementById('sPanelPass').className = 'set-panel' + (tab==='pass'?' on':'');
+  document.getElementById('sPanelUser').className = 'set-panel' + (tab==='user'?' on':'');
+  document.getElementById('sMsgPass').className = 'set-msg';
+  document.getElementById('sMsgUser').className = 'set-msg';
+}
+
+function sShowMsg(id, txt, type) {
+  const el = document.getElementById(id);
+  el.textContent = txt; el.className = 'set-msg ' + type;
+  setTimeout(() => { el.className = 'set-msg'; }, 4000);
+}
+
+function sInitProfile() {
+  if (!currentUser) return;
+  document.getElementById('setProfileName').textContent = currentUser;
+  document.getElementById('setProfileRole').textContent = currentRole === 'admin'
+    ? (lang==='ar' ? 'مدير النظام' : 'System Admin')
+    : (lang==='ar' ? 'مستخدم' : 'User');
+  document.getElementById('setAvatar').textContent = currentUser.charAt(0).toUpperCase();
+  const adminCard = document.getElementById('adminCard');
+  if (currentRole === 'admin') {
+    adminCard.style.display = 'block';
+    sLoadUsers();
+  } else {
+    adminCard.style.display = 'none';
+  }
+}
+
+async function sChangePass() {
+  const old_p = document.getElementById('sOldPass').value;
+  const new_p = document.getElementById('sNewPass').value;
+  const conf  = document.getElementById('sConfPass').value;
+  if (!old_p) { sShowMsg('sMsgPass', lang==='ar'?'أدخل كلمة المرور الحالية':'Enter current password', 'err'); return; }
+  if (new_p.length < 6) { sShowMsg('sMsgPass', lang==='ar'?'كلمة المرور يجب أن تكون 6 أحرف على الأقل':'Password must be at least 6 characters', 'err'); return; }
+  if (new_p !== conf) { sShowMsg('sMsgPass', lang==='ar'?'كلمتا المرور غير متطابقتين':'Passwords do not match', 'err'); return; }
+  const r = await apiCall('POST', '/api/change-password', {old_password: old_p, new_password: new_p});
+  if (!r || !r.ok) {
+    const d = r ? await r.json() : {};
+    sShowMsg('sMsgPass', d.error || (lang==='ar'?'فشل تغيير كلمة المرور':'Failed to change password'), 'err'); return;
+  }
+  document.getElementById('sOldPass').value = '';
+  document.getElementById('sNewPass').value = '';
+  document.getElementById('sConfPass').value = '';
+  sShowMsg('sMsgPass', lang==='ar'?'تم تغيير كلمة المرور بنجاح ✓':'Password changed successfully ✓', 'ok');
+}
+
+async function sChangeUser() {
+  const new_u = document.getElementById('sNewUser').value.trim();
+  const pass  = document.getElementById('sConfUser').value;
+  if (new_u.length < 3) { sShowMsg('sMsgUser', lang==='ar'?'اسم المستخدم يجب أن يكون 3 أحرف على الأقل':'Username must be at least 3 characters', 'err'); return; }
+  if (!pass) { sShowMsg('sMsgUser', lang==='ar'?'أدخل كلمة المرور للتأكيد':'Enter password to confirm', 'err'); return; }
+  const r = await apiCall('POST', '/api/change-username', {new_username: new_u, password: pass});
+  if (!r || !r.ok) {
+    const d = r ? await r.json() : {};
+    sShowMsg('sMsgUser', d.error || (lang==='ar'?'فشل تغيير اسم المستخدم':'Failed to change username'), 'err'); return;
+  }
+  currentUser = new_u;
+  localStorage.setItem('hizb_user', new_u);
+  document.getElementById('userBadge').textContent = '👤 ' + new_u;
+  document.getElementById('setProfileName').textContent = new_u;
+  document.getElementById('setAvatar').textContent = new_u.charAt(0).toUpperCase();
+  document.getElementById('sNewUser').value = '';
+  document.getElementById('sConfUser').value = '';
+  sShowMsg('sMsgUser', lang==='ar'?'تم تغيير اسم المستخدم بنجاح ✓':'Username changed successfully ✓', 'ok');
+}
+
+async function sLoadUsers() {
+  const r = await apiCall('GET', '/api/admin/users');
+  if (!r || !r.ok) return;
+  const users = await r.json();
+  const el = document.getElementById('sUsersList');
+  el.innerHTML = '';
+  users.forEach(u => {
+    const row = document.createElement('div');
+    row.className = 'user-row';
+    const isMe = u.username === currentUser;
+    row.innerHTML = `
+      <div class="user-row-name">
+        <span>👤</span>
+        <span>${u.username}</span>
+        <span class="user-role-badge ${u.role==='admin'?'admin':''}">${u.role}</span>
+        ${isMe ? `<span style="font-size:10px;color:var(--gold)">(${lang==='ar'?'أنت':'you'})</span>` : ''}
+      </div>
+      ${!isMe ? `<button class="user-del-btn" onclick="sDeleteUser(${u.id},'${u.username}')">${lang==='ar'?'حذف':'Delete'}</button>` : ''}
+    `;
+    el.appendChild(row);
+  });
+}
+
+async function sDeleteUser(uid, uname) {
+  if (!confirm(lang==='ar' ? `حذف المستخدم "${uname}"؟` : `Delete user "${uname}"?`)) return;
+  const r = await apiCall('DELETE', '/api/admin/users/' + uid);
+  if (!r || !r.ok) { sShowMsg('sMsgAdmin', lang==='ar'?'فشل الحذف':'Delete failed', 'err'); return; }
+  sShowMsg('sMsgAdmin', lang==='ar'?'تم حذف المستخدم ✓':'User deleted ✓', 'ok');
+  sLoadUsers();
+}
+
+async function sAddUser() {
+  const uname = document.getElementById('sNewUserName').value.trim();
+  const upass = document.getElementById('sNewUserPass').value;
+  const role  = document.getElementById('sNewUserRole').value;
+  if (!uname || !upass) { sShowMsg('sMsgAdmin', lang==='ar'?'أدخل اسم المستخدم وكلمة المرور':'Enter username and password', 'err'); return; }
+  const r = await apiCall('POST', '/api/admin/users', {username: uname, password: upass, role});
+  if (!r || !r.ok) {
+    const d = r ? await r.json() : {};
+    sShowMsg('sMsgAdmin', d.error || (lang==='ar'?'فشل الإضافة':'Failed to add'), 'err'); return;
+  }
+  document.getElementById('sNewUserName').value = '';
+  document.getElementById('sNewUserPass').value = '';
+  sShowMsg('sMsgAdmin', lang==='ar'?`تم إضافة "${uname}" بنجاح ✓`:`"${uname}" added successfully ✓`, 'ok');
+  sLoadUsers();
+}
+
 spawnParticles();
 
 /* ════════════════════════════════════════════
