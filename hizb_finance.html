@@ -451,6 +451,37 @@ textarea{resize:vertical;min-height:58px}
 .user-del-btn:hover{background:rgba(193,18,31,.12)}
 .set-full{grid-column:1/-1}
 
+/* ─── CATEGORIES MANAGER ─── */
+.cat-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;min-height:36px}
+.cat-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 12px;border-radius:20px;
+  border:1px solid var(--bdr2);background:var(--bg);
+  font-size:12px;font-family:var(--arabic);color:var(--txt);
+  transition:all .2s;cursor:default;
+  animation:txEnter .25s cubic-bezier(.22,.68,0,1.2) both;
+}
+.cat-chip:hover{border-color:var(--bdr3);background:var(--s2)}
+.cat-chip-icon{font-size:15px;line-height:1}
+.cat-chip-name{font-weight:600}
+.cat-chip-del{
+  background:transparent;border:none;color:var(--muted2);
+  cursor:pointer;font-size:13px;padding:0 2px;line-height:1;
+  transition:color .15s;border-radius:4px;margin-right:2px;
+}
+.cat-chip-del:hover{color:var(--red-l)}
+.cat-add-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.cat-icon-picker{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}
+.cat-fi{
+  font-size:18px;padding:5px 8px;border:1px solid var(--bdr);
+  border-radius:8px;cursor:pointer;transition:all .18s;background:transparent;
+}
+.cat-fi:hover,.cat-fi.sel{border-color:var(--gold);background:rgba(212,160,23,.1);transform:scale(1.15)}
+.cat-count-badge{
+  font-size:10px;font-family:var(--mono);color:var(--muted2);
+  background:var(--s3);padding:1px 6px;border-radius:10px;margin-right:4px;
+}
+
 /* ─── GROUPS ─── */
 .grp-card{background:var(--bg);border:1px solid var(--bdr);border-radius:12px;margin-bottom:12px;overflow:hidden}
 .grp-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--s2)}
@@ -641,8 +672,7 @@ textarea{resize:vertical;min-height:58px}
         <div class="fg">
           <label data-ar="الفئة" data-en="Category">الفئة</label>
           <select id="txCat">
-            <option>Activation</option><option>Eldorado</option><option>Steam Games</option>
-            <option>Steam Gift Cards</option><option>Valorant Points</option><option>Subscriptions</option><option>Other</option>
+            <option>Activation</option>
           </select>
         </div>
         <div class="fg">
@@ -974,10 +1004,61 @@ textarea{resize:vertical;min-height:58px}
         <div id="sGroupsList"></div>
       </div>
 
+      <!-- ─── تخصيص الفئات (للجميع) ─── -->
+      <div class="set-card set-full" id="catsCard">
+        <div class="set-card-title">🏷 <span>تخصيص فئات العمليات</span></div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:14px;font-family:var(--arabic)">
+          الفئات دي بتظهر في قائمة الاختيار لما تضيف عملية — تقدر تضيف وتحذف وتعدل بحرية
+        </div>
+
+        <div class="set-msg" id="sMsgCats"></div>
+
+        <!-- Current categories -->
+        <div style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-family:var(--arabic)">الفئات الحالية</div>
+        <div class="cat-grid" id="catChipsList"></div>
+
+        <div style="height:1px;background:var(--bdr);margin:14px 0"></div>
+
+        <!-- Add new category -->
+        <div style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-family:var(--arabic)">إضافة فئة جديدة</div>
+        <div class="cat-add-row">
+          <input class="set-input" type="text" id="catNewName"
+            placeholder="اسم الفئة..." style="flex:1;margin-bottom:0"/>
+          <button class="set-btn set-btn-gold" style="width:auto;padding:11px 18px;white-space:nowrap" onclick="catAdd()">+ إضافة</button>
+        </div>
+        <!-- Icon picker -->
+        <div style="font-size:10px;letter-spacing:1px;color:var(--muted);margin:10px 0 6px;font-family:var(--arabic)">اختر أيقونة (اختياري)</div>
+        <div class="cat-icon-picker" id="catIconPicker">
+          <span class="cat-fi sel" data-icon="🏷">🏷</span>
+          <span class="cat-fi" data-icon="💰">💰</span>
+          <span class="cat-fi" data-icon="🛒">🛒</span>
+          <span class="cat-fi" data-icon="🎮">🎮</span>
+          <span class="cat-fi" data-icon="📱">📱</span>
+          <span class="cat-fi" data-icon="🚗">🚗</span>
+          <span class="cat-fi" data-icon="🍕">🍕</span>
+          <span class="cat-fi" data-icon="💊">💊</span>
+          <span class="cat-fi" data-icon="📚">📚</span>
+          <span class="cat-fi" data-icon="✈️">✈️</span>
+          <span class="cat-fi" data-icon="🏠">🏠</span>
+          <span class="cat-fi" data-icon="⚡">⚡</span>
+          <span class="cat-fi" data-icon="🎬">🎬</span>
+          <span class="cat-fi" data-icon="👔">👔</span>
+          <span class="cat-fi" data-icon="💼">💼</span>
+          <span class="cat-fi" data-icon="🎁">🎁</span>
+          <span class="cat-fi" data-icon="📦">📦</span>
+          <span class="cat-fi" data-icon="🔧">🔧</span>
+          <span class="cat-fi" data-icon="🌐">🌐</span>
+          <span class="cat-fi" data-icon="⭐">⭐</span>
+        </div>
+
+        <!-- Reset to defaults -->
+        <button class="set-btn set-btn-outline" onclick="catReset()" style="margin-top:4px;font-size:11px">
+          ↺ إعادة تعيين للفئات الافتراضية
+        </button>
+      </div>
+
     </div>
   </div>
-
-  <!-- HISTORY -->
   <div id="tc-history" class="tc">
     <div class="section-label" id="histLabel">الفترات المؤرشفة</div>
     <div id="histList"><div class="empty" data-ar="لا توجد فترات مؤرشفة بعد" data-en="No archived periods yet">لا توجد فترات مؤرشفة بعد</div></div>
@@ -1092,8 +1173,7 @@ textarea{resize:vertical;min-height:58px}
       <div class="fg"><label data-ar="المبلغ" data-en="Amount">المبلغ</label><input type="number" id="eAmt"/></div>
       <div class="fg"><label data-ar="الفئة" data-en="Category">الفئة</label>
         <select id="eCat">
-          <option>Activation</option><option>Eldorado</option><option>Steam Games</option>
-          <option>Steam Gift Cards</option><option>Valorant Points</option><option>Subscriptions</option><option>Other</option>
+          <option>Activation</option>
         </select>
       </div>
     </div>
@@ -2602,6 +2682,9 @@ function sInitProfile() {
     adminCard.style.display  = 'none';
     groupsCard.style.display = 'none';
   }
+  // Always render categories (available to all users)
+  catRenderChips();
+  catInitIconPicker();
 }
 
 async function sChangePass() {
@@ -2802,6 +2885,125 @@ async function sRemoveMember(gid, uid, uname) {
   sLoadGroups();
 }
 
+/* ════════════════════════════════════════════
+   CATEGORIES SYSTEM
+   ════════════════════════════════════════════ */
+const DEFAULT_CATS = [
+  {name:'Activation',  icon:'🔑'},
+  {name:'Eldorado',    icon:'⭐'},
+  {name:'Steam Games', icon:'🎮'},
+  {name:'Steam Gift Cards', icon:'🎁'},
+  {name:'Valorant Points',  icon:'🎯'},
+  {name:'Subscriptions',    icon:'🔄'},
+  {name:'Other',       icon:'🏷'},
+];
+
+let userCats = [];
+
+function catLoad() {
+  const saved = localStorage.getItem('hizb_cats');
+  userCats = saved ? JSON.parse(saved) : DEFAULT_CATS.map(c=>({...c}));
+}
+
+function catSave() {
+  localStorage.setItem('hizb_cats', JSON.stringify(userCats));
+}
+
+function catPopulateSelects(selectedVal) {
+  ['txCat','eCat'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const cur = selectedVal || sel.value;
+    sel.innerHTML = userCats.map(c =>
+      `<option value="${c.name}" ${c.name===cur?'selected':''}>${c.icon} ${c.name}</option>`
+    ).join('');
+  });
+}
+
+function catRenderChips() {
+  const el = document.getElementById('catChipsList');
+  if (!el) return;
+  if (!userCats.length) {
+    el.innerHTML = '<span style="color:var(--muted2);font-size:12px;font-family:var(--arabic)">لا توجد فئات — أضف فئة جديدة</span>';
+    return;
+  }
+  el.innerHTML = '';
+  userCats.forEach((c, i) => {
+    // count how many transactions use this category
+    const usageCount = (typeof txs !== 'undefined') ? txs.filter(t=>t.cat===c.name).length : 0;
+    const chip = document.createElement('div');
+    chip.className = 'cat-chip';
+    chip.innerHTML = `
+      <span class="cat-chip-icon">${c.icon}</span>
+      <span class="cat-chip-name">${c.name}</span>
+      ${usageCount ? `<span class="cat-count-badge">${usageCount}</span>` : ''}
+      <button class="cat-chip-del" onclick="catDelete(${i})" title="حذف الفئة">✕</button>
+    `;
+    el.appendChild(chip);
+  });
+}
+
+let catSelectedIcon = '🏷';
+
+function catInitIconPicker() {
+  document.querySelectorAll('.cat-fi').forEach(el => {
+    el.onclick = () => {
+      catSelectedIcon = el.dataset.icon;
+      document.querySelectorAll('.cat-fi').forEach(e => e.classList.remove('sel'));
+      el.classList.add('sel');
+    };
+  });
+}
+
+function catAdd() {
+  const nameEl = document.getElementById('catNewName');
+  const name = nameEl.value.trim();
+  if (!name) { catShowMsg('أدخل اسم الفئة', 'err'); return; }
+  if (userCats.find(c => c.name.toLowerCase() === name.toLowerCase())) {
+    catShowMsg('الفئة دي موجودة بالفعل!', 'err'); return;
+  }
+  userCats.push({name, icon: catSelectedIcon});
+  catSave();
+  catPopulateSelects(name);
+  catRenderChips();
+  nameEl.value = '';
+  // reset icon picker
+  catSelectedIcon = '🏷';
+  document.querySelectorAll('.cat-fi').forEach(e => e.classList.remove('sel'));
+  document.querySelector('.cat-fi[data-icon="🏷"]')?.classList.add('sel');
+  catShowMsg(`تمت إضافة "${name}" ✓`, 'ok');
+}
+
+function catDelete(i) {
+  const cat = userCats[i];
+  const usageCount = (typeof txs !== 'undefined') ? txs.filter(t=>t.cat===cat.name).length : 0;
+  if (usageCount > 0) {
+    if (!confirm(`الفئة "${cat.name}" مستخدمة في ${usageCount} عملية — تأكد إنك تحذفها؟`)) return;
+  }
+  userCats.splice(i, 1);
+  catSave();
+  catPopulateSelects();
+  catRenderChips();
+  catShowMsg('تم الحذف', 'ok');
+}
+
+function catReset() {
+  if (!confirm('إعادة تعيين الفئات للقيم الافتراضية؟')) return;
+  userCats = DEFAULT_CATS.map(c=>({...c}));
+  catSave();
+  catPopulateSelects();
+  catRenderChips();
+  catShowMsg('تم إعادة التعيين ✓', 'ok');
+}
+
+function catShowMsg(txt, type) {
+  const el = document.getElementById('sMsgCats');
+  if (!el) return;
+  el.textContent = txt;
+  el.className = 'set-msg ' + type;
+  setTimeout(() => { el.className = 'set-msg'; }, 3500);
+}
+
 spawnParticles();
 
 /* ════════════════════════════════════════════
@@ -2809,6 +3011,8 @@ spawnParticles();
    ════════════════════════════════════════════ */
 applyLang();
 applyTheme();
+catLoad();
+catPopulateSelects();
 fxFetchRates();
 
 // Auto-login if token exists
