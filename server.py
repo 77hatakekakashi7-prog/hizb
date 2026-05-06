@@ -108,7 +108,7 @@ def init_db():
         );
         """)
         # إنشاء مستخدمين افتراضيين إن لم يكونوا موجودين
-        for uname, upass, role in [('Joe','hizb2024','admin'), ('Kakashi','hizb2024','user')]:
+        for uname, upass, role in [('admin','hizb2024','admin'), ('محاسب','hizb2024','user')]:
             existing = db.execute("SELECT id FROM users WHERE username=?", (uname,)).fetchone()
             if not existing:
                 hashed = hash_pass(upass)
@@ -404,6 +404,29 @@ def backup_db():
         download_name=f'hizb_backup_{timestamp}.db',
         mimetype='application/octet-stream'
     )
+
+# ─── CHANGE USERNAME ──────────────────────────────────────────────────
+@app.route('/api/change-username', methods=['POST', 'OPTIONS'])
+@require_auth
+def change_username():
+    if request.method == 'OPTIONS': return make_response('', 200)
+    d = request.get_json(force=True)
+    new_username = d.get('new_username', '').strip()
+    password     = d.get('password', '')
+    if not new_username or not password:
+        return jsonify({'error': 'أدخل اسم المستخدم الجديد وكلمة المرور'}), 400
+    if len(new_username) < 3:
+        return jsonify({'error': 'اسم المستخدم يجب أن يكون 3 أحرف على الأقل'}), 400
+    with get_db() as db:
+        user = db.execute("SELECT * FROM users WHERE id=?", (request.user_id,)).fetchone()
+        if not user or user['password'] != hash_pass(password):
+            return jsonify({'error': 'كلمة المرور غير صحيحة'}), 401
+        existing = db.execute("SELECT id FROM users WHERE username=? AND id!=?", (new_username, request.user_id)).fetchone()
+        if existing:
+            return jsonify({'error': 'اسم المستخدم موجود بالفعل'}), 409
+        db.execute("UPDATE users SET username=? WHERE id=?", (new_username, request.user_id))
+        db.commit()
+    return jsonify({'ok': True, 'username': new_username, 'message': 'تم تغيير اسم المستخدم بنجاح ✓'})
 
 # ─── CHANGE PASSWORD ──────────────────────────────────────────────────
 @app.route('/api/change-password', methods=['POST', 'OPTIONS'])
