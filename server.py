@@ -126,6 +126,21 @@ def init_db():
         );
         """)
 
+        # ── Migration: إنشاء جداول المجموعات لو مش موجودة ──
+        db.executescript("""
+        CREATE TABLE IF NOT EXISTS groups (
+            id      INTEGER PRIMARY KEY AUTOINCREMENT,
+            name    TEXT NOT NULL,
+            created TEXT DEFAULT (datetime('now'))
+        );
+        CREATE TABLE IF NOT EXISTS group_members (
+            user_id  INTEGER PRIMARY KEY,
+            group_id INTEGER NOT NULL,
+            FOREIGN KEY(user_id)  REFERENCES users(id),
+            FOREIGN KEY(group_id) REFERENCES groups(id)
+        );
+        """)
+
         # ── Migrations: إضافة عمود group_id لو مش موجود ──
         for tbl, col, coldef in [
             ('transactions',  'group_id', 'INTEGER'),
