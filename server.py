@@ -739,8 +739,10 @@ def change_password():
     return jsonify({'ok': True})
 
 # ═══════════════════════════════════════════════════════════════════════
+# استدعاء init_db عند تحميل الـ module (يشتغل مع gunicorn وبدونه)
+init_db()
+
 if __name__ == '__main__':
-    init_db()
     port  = int(os.environ.get('PORT', 5000))
     debug = os.environ.get('DEBUG', 'true').lower() == 'true'
     print(f'\n★  الحزب الاشتراكى Finance Server v2.1')
