@@ -108,7 +108,7 @@ def init_db():
         );
         """)
         # إنشاء مستخدمين افتراضيين إن لم يكونوا موجودين
-        for uname, upass, role in [('admin','hizb2024','admin'), ('محاسب','hizb2024','user')]:
+        for uname, upass, role in [('Joe','hizb2024','admin'), ('Kakashi','hizb2024','user')]:
             existing = db.execute("SELECT id FROM users WHERE username=?", (uname,)).fetchone()
             if not existing:
                 hashed = hash_pass(upass)
@@ -388,6 +388,46 @@ def export_excel():
     return send_file(buf, as_attachment=True, download_name=filename,
                      mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
+# ─── BACKUP ───────────────────────────────────────────────────────────
+@app.route('/api/backup', methods=['GET', 'OPTIONS'])
+@require_auth
+def backup_db():
+    if request.method == 'OPTIONS': return make_response('', 200)
+    if request.role != 'admin':
+        return jsonify({'error': 'ممنوع — admins only'}), 403
+    if not os.path.exists(DB_PATH):
+        return jsonify({'error': 'قاعدة البيانات غير موجودة'}), 404
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    return send_file(
+        DB_PATH,
+        as_attachment=True,
+        download_name=f'hizb_backup_{timestamp}.db',
+        mimetype='application/octet-stream'
+    )
+
+# ─── CHANGE PASSWORD ──────────────────────────────────────────────────
+@app.route('/api/change-password', methods=['POST', 'OPTIONS'])
+@require_auth
+def change_password():
+    if request.method == 'OPTIONS': return make_response('', 200)
+    d = request.get_json(force=True)
+    old_pass = d.get('old_password', '')
+    new_pass = d.get('new_password', '')
+    if not old_pass or not new_pass:
+        return jsonify({'error': 'أدخل كلمة المرور القديمة والجديدة'}), 400
+    if len(new_pass) < 6:
+        return jsonify({'error': 'كلمة المرور الجديدة يجب أن تكون 6 أحرف على الأقل'}), 400
+    with get_db() as db:
+        user = db.execute("SELECT * FROM users WHERE id=?", (request.user_id,)).fetchone()
+        if not user or user['password'] != hash_pass(old_pass):
+            return jsonify({'error': 'كلمة المرور القديمة غير صحيحة'}), 401
+        db.execute("UPDATE users SET password=? WHERE id=?", (hash_pass(new_pass), request.user_id))
+        # حذف كل الجلسات الأخرى عشان الأمان
+        db.execute("DELETE FROM sessions WHERE user_id=? AND token!=?",
+                   (request.user_id, request.headers.get('X-Auth-Token','')))
+        db.commit()
+    return jsonify({'ok': True, 'message': 'تم تغيير كلمة المرور بنجاح ✓'})
+
 # ─── ADMIN: إدارة المستخدمين ──────────────────────────────────────────
 @app.route('/api/admin/users', methods=['GET', 'OPTIONS'])
 @require_auth
@@ -431,10 +471,8 @@ def admin_delete_user(uid):
         db.commit()
     return jsonify({'ok': True})
 
-# ─── init at import time (runs under gunicorn too) ──────────────────
-init_db()
-
 if __name__ == '__main__':
+    init_db()
     port = int(os.environ.get('PORT', 5000))
     debug = os.environ.get('DEBUG', 'true').lower() == 'true'
     print(f'\n★  الحزب الاشتراكى Finance Server v2.0')
