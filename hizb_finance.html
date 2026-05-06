@@ -36,7 +36,7 @@ body.light input,body.light select,body.light textarea{background:var(--s2);colo
 body.light select option{background:var(--s2);color:var(--txt)}
 body.light .sb2{background:var(--s2)}
 body.light .cd{background:var(--s2)}
-body.light #loadingOverlay{background:rgba(244,241,232,.95)}
+body.light #loadingOverlay{background:var(--bg)}
 
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:var(--bg)}
@@ -247,10 +247,34 @@ textarea{resize:vertical;min-height:58px}
 .bconfirm{flex:1;padding:11px;background:var(--red);border:none;border-radius:9px;color:#fff;font-family:var(--arabic);font-size:13px;font-weight:700;cursor:pointer}
 .warn-txt{font-size:14px;color:var(--txt);line-height:1.7;margin-bottom:5px;font-family:var(--arabic)}
 .warn-sub{font-size:12px;color:var(--muted);font-family:var(--arabic)}
-#loadingOverlay{position:fixed;inset:0;z-index:500;background:rgba(8,8,18,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .4s}
+#loadingOverlay{position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;padding:0;transition:opacity .5s ease}
 #loadingOverlay.hidden{opacity:0;pointer-events:none}
-.spinner{width:36px;height:36px;border:2px solid var(--bdr);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite}
-.loading-txt{font-size:12px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;font-family:var(--arabic)}
+
+/* ─── SKELETON SYSTEM ─── */
+.sk{background:linear-gradient(90deg,var(--s2) 25%,var(--s3) 50%,var(--s2) 75%);background-size:200% 100%;animation:skShimmer 1.6s ease-in-out infinite;border-radius:8px}
+@keyframes skShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.sk-card{background:var(--s1);border:1px solid var(--bdr);border-radius:14px;padding:24px;margin-bottom:16px;position:relative;overflow:hidden}
+.sk-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--bdr2),transparent)}
+.sk-line{height:12px;margin-bottom:10px}
+.sk-line.sm{height:9px;width:60%}
+.sk-line.lg{height:42px;width:55%;margin-bottom:6px}
+.sk-line.xl{height:56px;width:70%;margin-bottom:8px}
+.sk-line.full{width:100%}
+.sk-line.w40{width:40%}
+.sk-line.w30{width:30%}
+.sk-line.w80{width:80%}
+.sk-bar{height:6px;border-radius:3px;margin:14px 0 6px}
+.sk-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.sk-stat{background:var(--bg);border:1px solid var(--bdr);border-radius:10px;padding:12px 16px}
+.sk-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sk-tx{background:var(--s1);border:1px solid var(--bdr);border-radius:10px;padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.sk-tx-body{flex:1}
+.sk-nav{display:flex;gap:4px;background:var(--s1);border-radius:12px;padding:4px;border:1px solid var(--bdr);margin-bottom:20px}
+.sk-nav-item{flex:1;height:36px;border-radius:9px}
+.sk-header{text-align:center;padding:32px 0 20px;border-bottom:1px solid var(--bdr);margin-bottom:20px}
+
+/* ─── COUNT-UP animation ─── */
+.counting{transition:none}
 .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(0);padding:11px 22px;border-radius:22px;font-size:13px;font-family:var(--arabic);z-index:9999;transition:opacity .4s,transform .4s;box-shadow:var(--shadow);white-space:nowrap;animation:toastIn .35s cubic-bezier(.22,.68,0,1.2) both}
 @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 .particle{position:fixed;pointer-events:none;z-index:0;border-radius:50%;animation:floatUp linear infinite;opacity:0}
@@ -579,8 +603,71 @@ textarea{resize:vertical;min-height:58px}
 
 <!-- LOADING -->
 <div id="loadingOverlay" class="hidden">
-  <div class="spinner"></div>
-  <div class="loading-txt" id="loadingTxt">جاري التحميل...</div>
+  <div style="max-width:880px;margin:0 auto;padding:0 14px;width:100%">
+
+    <!-- Skeleton Header -->
+    <div class="sk-header">
+      <div class="sk sk-line w30" style="height:10px;width:90px;margin:0 auto 10px"></div>
+      <div class="sk sk-line" style="height:28px;width:200px;margin:0 auto 8px"></div>
+      <div class="sk sk-line sm" style="width:120px;margin:0 auto"></div>
+    </div>
+
+    <!-- Skeleton Nav -->
+    <div class="sk-nav">
+      <div class="sk sk-nav-item"></div>
+      <div class="sk sk-nav-item"></div>
+      <div class="sk sk-nav-item"></div>
+      <div class="sk sk-nav-item"></div>
+      <div class="sk sk-nav-item"></div>
+    </div>
+
+    <!-- Skeleton Balance Card -->
+    <div class="sk-card">
+      <div class="sk sk-line sm" style="width:100px;margin-bottom:12px"></div>
+      <div class="sk sk-line xl"></div>
+      <div class="sk sk-bar full"></div>
+      <div class="sk-row">
+        <div class="sk-stat">
+          <div class="sk sk-line sm" style="width:80px;margin-bottom:8px"></div>
+          <div class="sk sk-line" style="height:22px;width:110px"></div>
+        </div>
+        <div class="sk-stat">
+          <div class="sk sk-line sm" style="width:80px;margin-bottom:8px"></div>
+          <div class="sk sk-line" style="height:22px;width:110px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skeleton Recent Transactions -->
+    <div class="sk-card">
+      <div class="sk sk-line sm" style="width:120px;margin-bottom:14px"></div>
+      <div class="sk-tx">
+        <div class="sk sk-dot" style="width:8px;height:8px;border-radius:50%"></div>
+        <div class="sk-tx-body">
+          <div class="sk sk-line w80" style="height:13px;margin-bottom:7px"></div>
+          <div class="sk sk-line w40" style="height:9px"></div>
+        </div>
+        <div class="sk sk-line" style="width:70px;height:14px"></div>
+      </div>
+      <div class="sk-tx">
+        <div class="sk sk-dot" style="width:8px;height:8px;border-radius:50%"></div>
+        <div class="sk-tx-body">
+          <div class="sk sk-line" style="height:13px;width:55%;margin-bottom:7px"></div>
+          <div class="sk sk-line" style="height:9px;width:35%"></div>
+        </div>
+        <div class="sk sk-line" style="width:80px;height:14px"></div>
+      </div>
+      <div class="sk-tx">
+        <div class="sk sk-dot" style="width:8px;height:8px;border-radius:50%"></div>
+        <div class="sk-tx-body">
+          <div class="sk sk-line" style="height:13px;width:70%;margin-bottom:7px"></div>
+          <div class="sk sk-line" style="height:9px;width:40%"></div>
+        </div>
+        <div class="sk sk-line" style="width:60px;height:14px"></div>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <!-- MAIN APP -->
@@ -1482,7 +1569,7 @@ function applyLang() {
   // Specific dynamic elements
   document.getElementById('loginBtn').textContent = t('loginBtn');
   document.getElementById('logoutBtn').textContent = t('logoutBtn');
-  document.getElementById('loadingTxt').textContent = t('loading');
+  // loadingTxt removed (skeleton replaces spinner)
   document.getElementById('recentLabel').textContent = t('recentLabel');
   document.getElementById('histLabel').textContent = t('histLabel');
   document.getElementById('exportBtnTxt').textContent = t('export');
@@ -1648,7 +1735,16 @@ function showApp() {
   showLoading(true); loadData();
 }
 
-function showLoading(v) { document.getElementById('loadingOverlay').classList.toggle('hidden', !v); }
+function showLoading(v) {
+  const ov = document.getElementById('loadingOverlay');
+  const app = document.getElementById('mainApp');
+  if (v) {
+    ov.classList.remove('hidden');
+    // show skeleton on top of app (app already visible from auto-login or fades in)
+  } else {
+    ov.classList.add('hidden');
+  }
+}
 
 /* ════════════════════════════════════════════
    DATA
@@ -1864,18 +1960,75 @@ function calcStats(){
   return{inc,exp,bal:inc-exp};
 }
 
+/* ════════════════════════════════════════════
+   COUNT-UP ANIMATION
+   ════════════════════════════════════════════ */
+const _countUpTimers = {};
+
+function countUp(elId, targetVal, duration = 900, prefix = '', suffix = '') {
+  const el = document.getElementById(elId);
+  if (!el) return;
+
+  // Cancel any running animation on this element
+  if (_countUpTimers[elId]) cancelAnimationFrame(_countUpTimers[elId]);
+
+  const startVal = 0;
+  const startTime = performance.now();
+  const isNeg = targetVal < 0;
+  const absTarget = Math.abs(targetVal);
+
+  function easeOut(t) {
+    return 1 - Math.pow(1 - t, 3); // cubic ease-out
+  }
+
+  function tick(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = easeOut(progress);
+    const current = absTarget * eased;
+
+    // Format with commas like fmt()
+    const formatted = Number(current).toLocaleString('en-EG', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+
+    el.textContent = prefix + (isNeg ? '-' : '') + formatted + suffix;
+
+    if (progress < 1) {
+      _countUpTimers[elId] = requestAnimationFrame(tick);
+    } else {
+      // Snap to exact final value
+      el.textContent = prefix + (isNeg ? '-' : '') + Number(Math.abs(targetVal)).toLocaleString('en-EG', {
+        minimumFractionDigits: 2, maximumFractionDigits: 2
+      }) + suffix;
+    }
+  }
+
+  _countUpTimers[elId] = requestAnimationFrame(tick);
+}
+
 function render(){
   const{inc,exp,bal}=calcStats();
-  document.getElementById('totInc').textContent=fmt(inc);
-  document.getElementById('totExp').textContent=fmt(exp);
+
+  // ── Count-up animations ──
+  countUp('totInc', inc, 800);
+  countUp('totExp', exp, 800);
+  countUp('balDisp', Math.abs(bal), 1000, 'EGP ');
+
+  // ── Pop animation on stat cards ──
   ['totInc','totExp'].forEach(id=>{const el=document.getElementById(id);if(el){el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop');}});
+
   const bd=document.getElementById('balDisp');
-  bd.textContent='EGP '+fmt(Math.abs(bal));
   bd.className='bv '+(bal>0?'pos':bal<0?'neg':'zer');
   const bar=document.getElementById('balBar');
   const tot=inc+exp;
-  bar.style.width=tot?((inc/tot)*100)+'%':'50%';
-  bar.style.background=bal>=0?'var(--green-l)':'var(--red-l)';
+  // Animate bar width
+  bar.style.width='0%';
+  setTimeout(()=>{
+    bar.style.width=tot?((inc/tot)*100)+'%':'50%';
+    bar.style.background=bal>=0?'var(--green-l)':'var(--red-l)';
+  }, 80);
   const thresh=parseInt(document.getElementById('alertThresh').value)||80;
   document.getElementById('alertPct').textContent=thresh;
   const alertEl=document.getElementById('alertBar');
