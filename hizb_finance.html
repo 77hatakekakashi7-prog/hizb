@@ -3563,5 +3563,918 @@ fxFetchRates();
   <div class="mbn-more-item" id="mbne-settings" onclick="mbnClick('settings',document.getElementById('mbn-more'));mbnCloseMore()"><span class="mbn-more-icon">⚙️</span><span>الإعدادات</span></div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════
+     CINEMATIC ENHANCEMENTS — إضافات سينمائية
+     أضف ده قبل </body> في hizb_finance.html
+     ═══════════════════════════════════════════════════════ -->
+
+<style>
+/* ══════════════════════════════════════════
+   1. LOGIN — CINEMATIC ENTRANCE
+   ══════════════════════════════════════════ */
+
+/* Particle canvas behind login */
+#loginParticleCanvas {
+  position: fixed; inset: 0; z-index: 999;
+  pointer-events: none;
+}
+
+/* Override login box to be glass + cinematic */
+#loginPage .login-box {
+  animation: none !important;
+  opacity: 0;
+  transform: translateY(40px) scale(0.95);
+  transition: opacity .9s cubic-bezier(.22,.68,0,1.2), transform .9s cubic-bezier(.22,.68,0,1.2);
+}
+#loginPage.cinema-ready .login-box {
+  opacity: 1;
+  transform: none;
+}
+
+/* Typewriter title */
+.login-title-typed {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid var(--gold);
+  animation: typeCursor .75s step-end infinite;
+  background: linear-gradient(135deg,var(--gold-l),var(--gold),var(--red-l));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@keyframes typeCursor { 0%,100%{border-color:var(--gold)} 50%{border-color:transparent} }
+
+/* Star entrance spin */
+.login-star.cinema-star {
+  animation: starCinema 1.2s cubic-bezier(.22,.68,0,1.2) both !important;
+}
+@keyframes starCinema {
+  0%   { opacity:0; transform:scale(0) rotate(-180deg); filter:drop-shadow(0 0 30px var(--gold)); }
+  60%  { transform:scale(1.35) rotate(20deg); filter:drop-shadow(0 0 24px rgba(212,160,23,.9)); }
+  100% { opacity:1; transform:scale(1) rotate(0deg); filter:drop-shadow(0 0 8px rgba(193,18,31,.4)); }
+}
+
+/* Form fields fade-up stagger */
+.lfield {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity .5s ease, transform .5s ease;
+}
+.lfield.field-shown { opacity: 1; transform: none; }
+.btn-login, .server-status {
+  opacity: 0;
+  transition: opacity .5s ease;
+}
+.btn-login.field-shown, .server-status.field-shown { opacity: 1; }
+
+/* ══════════════════════════════════════════
+   2. BALANCE — LIVING NUMBER (FLIP CLOCK)
+   ══════════════════════════════════════════ */
+
+.bv {
+  perspective: 400px;
+  transform-style: preserve-3d;
+}
+
+/* Zero-state shake */
+@keyframes zeroShake {
+  0%,100%{transform:translateX(0) rotate(0)}
+  15%{transform:translateX(-6px) rotate(-.5deg)}
+  30%{transform:translateX(6px) rotate(.5deg)}
+  45%{transform:translateX(-4px)}
+  60%{transform:translateX(4px)}
+  75%{transform:translateX(-2px)}
+}
+.bal-card.zero-shake { animation: zeroShake .55s cubic-bezier(.36,.07,.19,.97) both; }
+
+/* Confetti burst */
+.confetti-piece {
+  position: fixed;
+  width: 8px; height: 12px;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 9999;
+  animation: confettiFall linear forwards;
+}
+@keyframes confettiFall {
+  0%  { opacity:1; transform:translateY(0) rotate(0deg) scale(1); }
+  100%{ opacity:0; transform:translateY(120vh) rotate(720deg) scale(.4); }
+}
+
+/* Flip number digit containers */
+.flip-digit-wrap {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+.flip-digit {
+  display: inline-block;
+  animation: digitRollUp .35s cubic-bezier(.22,.68,0,1.2) both;
+}
+@keyframes digitRollUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+.flip-digit.roll-down {
+  animation: digitRollDown .35s cubic-bezier(.22,.68,0,1.2) both;
+}
+@keyframes digitRollDown {
+  from { transform: translateY(-100%); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+
+/* ══════════════════════════════════════════
+   3. TRANSACTION CARDS — CARD DECK
+   ══════════════════════════════════════════ */
+
+/* Category color palette */
+:root {
+  --cat-activation: #7C3AED;
+  --cat-eldorado:   #D4A017;
+  --cat-steam:      #1b9fd1;
+  --cat-xbox:       #107c10;
+  --cat-valorant:   #FF4655;
+  --cat-sub:        #F59E0B;
+  --cat-other:      #6B7280;
+}
+
+/* Card deck container — first 3 */
+.deck-container {
+  position: relative;
+  height: 160px;
+  margin-bottom: 14px;
+  cursor: pointer;
+}
+.deck-container.expanded { height: auto; }
+.deck-card-stack {
+  position: absolute; inset: 0;
+  transition: all .4s cubic-bezier(.22,.68,0,1.2);
+}
+.deck-card-stack.deck-0 { z-index:3; transform: rotate(0deg) translateY(0); }
+.deck-card-stack.deck-1 { z-index:2; transform: rotate(-1.5deg) translateY(8px); filter:brightness(.9); }
+.deck-card-stack.deck-2 { z-index:1; transform: rotate(1deg) translateY(16px); filter:brightness(.8); }
+
+.deck-container:hover .deck-0 { transform: rotate(0) translateY(-4px); }
+.deck-container:hover .deck-1 { transform: rotate(-4deg) translateY(8px) translateX(-12px); }
+.deck-container:hover .deck-2 { transform: rotate(3deg) translateY(12px) translateX(12px); }
+
+.deck-container.expanded .deck-card-stack {
+  position: relative;
+  transform: none !important;
+  filter: none !important;
+  margin-bottom: 8px;
+}
+
+/* Category accent colors on txi cards */
+.txi[data-cat="Activation"]      { border-right-color: var(--cat-activation) !important; }
+.txi[data-cat="Eldorado"]         { border-right-color: var(--cat-eldorado) !important; }
+.txi[data-cat="Steam Games"]      { border-right-color: var(--cat-steam) !important; }
+.txi[data-cat="Steam Gift Cards"] { border-right-color: var(--cat-steam) !important; }
+.txi[data-cat="Valorant Points"]  { border-right-color: var(--cat-valorant) !important; }
+.txi[data-cat="Subscriptions"]    { border-right-color: var(--cat-sub) !important; }
+.txi[data-cat="Other"]            { border-right-color: var(--cat-other) !important; }
+
+/* Category dot badge */
+.txi-cat-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  display: inline-block; margin-left: 5px; vertical-align: middle;
+  flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════════
+   4. NAVIGATION — MAGNETIC TABS
+   ══════════════════════════════════════════ */
+
+.nav { position: relative; }
+
+/* Sliding indicator pill */
+#navIndicator {
+  position: absolute;
+  bottom: 4px; left: 4px;
+  height: calc(100% - 8px);
+  background: linear-gradient(135deg,var(--red-d),var(--red));
+  border-radius: 9px;
+  box-shadow: 0 4px 18px rgba(193,18,31,.4);
+  transition: transform .35s cubic-bezier(.22,.68,0,1.2), width .35s cubic-bezier(.22,.68,0,1.2);
+  z-index: 0;
+  pointer-events: none;
+  will-change: transform, width;
+}
+
+/* Reset tab active style — indicator does the work */
+.ntab.on {
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+  color: #fff !important;
+  position: relative;
+  z-index: 1;
+}
+.ntab { position: relative; z-index: 1; }
+
+/* ══════════════════════════════════════════
+   5. ODOMETER EFFECT (replaces count-up)
+   ══════════════════════════════════════════ */
+
+.odometer-wrap {
+  display: inline-flex;
+  align-items: flex-end;
+  overflow: hidden;
+  font-feature-settings: "tnum" 1;
+}
+.odo-digit-col {
+  display: flex;
+  flex-direction: column;
+  transition: transform .55s cubic-bezier(.22,.68,0,1.2);
+  will-change: transform;
+}
+.odo-digit-col span {
+  display: block;
+  line-height: 1.1;
+  text-align: center;
+}
+
+/* ══════════════════════════════════════════
+   6. EMPTY STATE — INVITATION
+   ══════════════════════════════════════════ */
+
+.empty-invite {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 20px;
+  gap: 16px;
+}
+
+.empty-coin {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold-d), var(--gold-l));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  box-shadow: 0 0 0 0 rgba(212,160,23,.4);
+  animation: coinFloat 2.5s ease-in-out infinite, coinGlow 2.5s ease-in-out infinite;
+  cursor: default;
+}
+@keyframes coinFloat {
+  0%,100%{ transform: translateY(0) rotate(-5deg); }
+  50%    { transform: translateY(-16px) rotate(5deg); }
+}
+@keyframes coinGlow {
+  0%,100%{ box-shadow: 0 0 0 0 rgba(212,160,23,.3), 0 8px 24px rgba(0,0,0,.3); }
+  50%    { box-shadow: 0 0 0 12px rgba(212,160,23,0), 0 16px 32px rgba(212,160,23,.2); }
+}
+
+.empty-invite-title {
+  font-family: var(--arabic);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--txt);
+  text-align: center;
+}
+.empty-invite-sub {
+  font-size: 12px;
+  color: var(--muted);
+  font-family: var(--arabic);
+  text-align: center;
+}
+.empty-invite-btn {
+  padding: 13px 28px;
+  background: linear-gradient(135deg, var(--red-d), var(--red));
+  border: none; border-radius: 24px;
+  color: #fff; font-family: var(--arabic);
+  font-size: 14px; font-weight: 700;
+  cursor: pointer; letter-spacing: .5px;
+  position: relative; overflow: hidden;
+  animation: btnPulse 2s ease-in-out infinite;
+  box-shadow: 0 4px 20px rgba(193,18,31,.35);
+}
+@keyframes btnPulse {
+  0%,100%{ box-shadow: 0 4px 20px rgba(193,18,31,.35); transform: scale(1); }
+  50%    { box-shadow: 0 4px 32px rgba(193,18,31,.55); transform: scale(1.03); }
+}
+.empty-invite-btn:hover { opacity: .9; }
+
+/* ══════════════════════════════════════════
+   7. DASHBOARD — HUD STYLE
+   ══════════════════════════════════════════ */
+
+/* Scan lines overlay on bal-card */
+.bal-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(212,160,23,.015) 2px,
+    rgba(212,160,23,.015) 4px
+  );
+  pointer-events: none;
+  animation: scanMove 3s linear infinite;
+}
+@keyframes scanMove {
+  from { background-position: 0 0; }
+  to   { background-position: 0 40px; }
+}
+
+/* Scan sweep line */
+.scan-sweep {
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(212,160,23,.25), transparent);
+  animation: sweepDown 3s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+@keyframes sweepDown {
+  0%  { top: 0;    opacity: 1; }
+  90% { top: 100%; opacity: .3; }
+  100%{ top: 100%; opacity: 0; }
+}
+
+/* HUD underline on balance value */
+.bv::before {
+  content: '';
+  position: absolute;
+  bottom: 2px; left: 0; right: 0;
+  height: 1px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--gold) 0px,
+    var(--gold) 8px,
+    transparent 8px,
+    transparent 14px
+  );
+  opacity: .3;
+  animation: dashMove 1.5s linear infinite;
+}
+@keyframes dashMove {
+  from { background-position: 0 0; }
+  to   { background-position: 14px 0; }
+}
+.bv { position: relative; }
+
+/* Gauge style for stats */
+.sb { position: relative; overflow: hidden; }
+.sb::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  height: 2px;
+  background: var(--green-l);
+  border-radius: 1px;
+  transition: width .8s cubic-bezier(.22,.68,0,1.2);
+}
+.sb:nth-child(2)::after { background: var(--red-l); }
+
+.gauge-bar {
+  height: 3px;
+  border-radius: 2px;
+  margin-top: 6px;
+  background: var(--s3);
+  overflow: hidden;
+}
+.gauge-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width .8s cubic-bezier(.22,.68,0,1.2);
+  background: linear-gradient(90deg, var(--green-l), rgba(34,197,94,.4));
+}
+.gauge-fill.exp { background: linear-gradient(90deg, var(--red-l), rgba(255,77,90,.4)); }
+
+/* ══════════════════════════════════════════
+   8. THEME SWITCHER — CIRCULAR REVEAL
+   ══════════════════════════════════════════ */
+
+#themeRevealOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  clip-path: circle(0px at var(--rx, 50%) var(--ry, 50%));
+  transition: clip-path .65s cubic-bezier(.22,.68,0,1.2);
+  background: var(--reveal-bg, #F0EDE4);
+}
+#themeRevealOverlay.revealing {
+  clip-path: circle(150vmax at var(--rx) var(--ry));
+}
+</style>
+
+<script>
+/* ════════════════════════════════════════════
+   ENHANCEMENT ENGINE — runs after main scripts
+   ════════════════════════════════════════════ */
+(function() {
+'use strict';
+
+// ── Wait for DOM ──────────────────────────
+function ready(fn) {
+  if (document.readyState !== 'loading') fn();
+  else document.addEventListener('DOMContentLoaded', fn);
+}
+
+ready(function() {
+
+/* ─────────────────────────────────────────
+   1. LOGIN CINEMATIC ENTRANCE
+───────────────────────────────────────── */
+function initLoginCinema() {
+  const loginPage = document.getElementById('loginPage');
+  if (!loginPage) return;
+
+  // Particle canvas
+  const canvas = document.createElement('canvas');
+  canvas.id = 'loginParticleCanvas';
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  const particles = [];
+  const COLORS = ['rgba(212,160,23,', 'rgba(193,18,31,', 'rgba(245,200,66,', 'rgba(255,77,90,'];
+
+  for (let i = 0; i < 80; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - .5) * .4,
+      vy: (Math.random() - .5) * .4,
+      r: 1 + Math.random() * 2.5,
+      alpha: .05 + Math.random() * .25,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)]
+    });
+  }
+
+  let animFrame;
+  function drawParticles() {
+    if (!document.getElementById('loginPage') ||
+        document.getElementById('loginPage').style.display === 'none') {
+      cancelAnimationFrame(animFrame);
+      canvas.remove();
+      return;
+    }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = canvas.width;
+      if (p.x > canvas.width) p.x = 0;
+      if (p.y < 0) p.y = canvas.height;
+      if (p.y > canvas.height) p.y = 0;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color + p.alpha + ')';
+      ctx.fill();
+    });
+    // draw connecting lines
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 100) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = 'rgba(212,160,23,' + (0.04 * (1 - dist/100)) + ')';
+          ctx.lineWidth = .5;
+          ctx.stroke();
+        }
+      }
+    }
+    animFrame = requestAnimationFrame(drawParticles);
+  }
+  drawParticles();
+
+  // Typewriter on login title
+  const titleEl = document.getElementById('loginTitle');
+  if (titleEl) {
+    const text = titleEl.textContent;
+    titleEl.textContent = '';
+    titleEl.classList.add('login-title-typed');
+    let i = 0;
+    function typeChar() {
+      if (i < text.length) {
+        titleEl.textContent += text[i++];
+        setTimeout(typeChar, 90);
+      } else {
+        // Remove cursor blink after typing
+        setTimeout(() => titleEl.style.borderRight = 'none', 800);
+      }
+    }
+    setTimeout(typeChar, 500);
+  }
+
+  // Star entrance
+  const star = document.querySelector('.login-star');
+  if (star) star.classList.add('cinema-star');
+
+  // Show box
+  setTimeout(() => loginPage.classList.add('cinema-ready'), 100);
+
+  // Stagger form fields
+  const fields = loginPage.querySelectorAll('.lfield');
+  fields.forEach((f, i) => setTimeout(() => f.classList.add('field-shown'), 800 + i * 150));
+  const loginBtn = loginPage.querySelector('.btn-login');
+  const srvStat = loginPage.querySelector('.server-status');
+  if (loginBtn) setTimeout(() => loginBtn.classList.add('field-shown'), 800 + fields.length * 150);
+  if (srvStat) setTimeout(() => srvStat.classList.add('field-shown'), 950 + fields.length * 150);
+}
+
+initLoginCinema();
+
+/* ─────────────────────────────────────────
+   2. BALANCE — FLIP EFFECT + ZERO SHAKE + CONFETTI
+───────────────────────────────────────── */
+let _lastBalVal = null;
+
+function confettiBurst() {
+  const colors = ['#D4A017','#C1121F','#22C55E','#F5C842','#FF4D5A','#fff'];
+  for (let i = 0; i < 60; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.cssText = `
+      left:${20 + Math.random() * 60}vw;
+      top:${Math.random() * 30}vh;
+      background:${colors[Math.floor(Math.random() * colors.length)]};
+      width:${4 + Math.random() * 8}px;
+      height:${6 + Math.random() * 10}px;
+      border-radius:${Math.random() > .5 ? '50%' : '2px'};
+      animation-duration:${1.5 + Math.random() * 2}s;
+      animation-delay:${Math.random() * .4}s;
+      transform:rotate(${Math.random()*360}deg);
+    `;
+    document.body.appendChild(el);
+    const dur = (1.5 + Math.random() * 2 + Math.random() * .4 + .1) * 1000;
+    setTimeout(() => el.remove(), dur + 200);
+  }
+}
+
+// Patch the existing render / countUp to add our effects
+const _origCountUp = window.countUp;
+if (_origCountUp) {
+  window.countUp = function(elId, targetVal, duration, prefix, suffix) {
+    const balDisp = document.getElementById('balDisp');
+    if (elId === 'balDisp') {
+      // detect zero shake
+      if (targetVal === 0) {
+        const card = document.querySelector('.bal-card');
+        if (card) {
+          card.classList.remove('zero-shake');
+          void card.offsetWidth;
+          card.classList.add('zero-shake');
+          setTimeout(() => card.classList.remove('zero-shake'), 600);
+        }
+      }
+      // detect big positive jump → confetti
+      if (_lastBalVal !== null && targetVal > _lastBalVal && targetVal - _lastBalVal > 500) {
+        setTimeout(confettiBurst, 300);
+      }
+      _lastBalVal = targetVal;
+    }
+    return _origCountUp(elId, targetVal, duration, prefix, suffix);
+  };
+}
+
+// Add scan sweep line to bal-card
+function addScanLine() {
+  const card = document.querySelector('.bal-card');
+  if (card && !card.querySelector('.scan-sweep')) {
+    const sweep = document.createElement('div');
+    sweep.className = 'scan-sweep';
+    card.style.position = 'relative';
+    card.style.overflow = 'hidden';
+    card.appendChild(sweep);
+  }
+}
+setTimeout(addScanLine, 500);
+
+// Add gauge bars to stat boxes
+function addGaugeBars() {
+  const sbInc = document.querySelector('#totInc')?.parentElement;
+  const sbExp = document.querySelector('#totExp')?.parentElement;
+  if (sbInc && !sbInc.querySelector('.gauge-bar')) {
+    const gb = document.createElement('div');
+    gb.className = 'gauge-bar';
+    gb.innerHTML = '<div class="gauge-fill" id="gaugeInc" style="width:0%"></div>';
+    sbInc.appendChild(gb);
+  }
+  if (sbExp && !sbExp.querySelector('.gauge-bar')) {
+    const gb = document.createElement('div');
+    gb.className = 'gauge-bar';
+    gb.innerHTML = '<div class="gauge-fill exp" id="gaugeExp" style="width:0%"></div>';
+    sbExp.appendChild(gb);
+  }
+}
+setTimeout(addGaugeBars, 600);
+
+// Patch render to update gauges
+const _origRender = window.render;
+if (_origRender) {
+  window.render = function() {
+    _origRender.call(this);
+    setTimeout(() => {
+      addGaugeBars();
+      const txs = window.txs || [];
+      const inc = txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amt,0);
+      const exp = txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amt,0);
+      const tot = inc + exp || 1;
+      const gi = document.getElementById('gaugeInc');
+      const ge = document.getElementById('gaugeExp');
+      if (gi) gi.style.width = Math.min(100, (inc/tot)*100) + '%';
+      if (ge) ge.style.width = Math.min(100, (exp/tot)*100) + '%';
+    }, 100);
+  };
+}
+
+/* ─────────────────────────────────────────
+   3. TRANSACTION CARDS — CATEGORY COLORS
+───────────────────────────────────────── */
+function applyCatColors() {
+  document.querySelectorAll('.txi').forEach(card => {
+    const catEl = card.querySelector('.tcat');
+    if (catEl) {
+      const cat = catEl.textContent.trim();
+      if (!card.dataset.cat) card.setAttribute('data-cat', cat);
+    }
+  });
+}
+
+// MutationObserver to apply colors as cards render
+const txObserver = new MutationObserver(() => applyCatColors());
+const txList = document.getElementById('txList');
+if (txList) txObserver.observe(txList, { childList: true, subtree: true });
+
+/* ─────────────────────────────────────────
+   4. NAV — MAGNETIC SLIDING INDICATOR
+───────────────────────────────────────── */
+function initMagneticNav() {
+  const nav = document.getElementById('mainNav');
+  if (!nav) return;
+
+  // Create the sliding pill
+  const indicator = document.createElement('div');
+  indicator.id = 'navIndicator';
+  nav.insertBefore(indicator, nav.firstChild);
+
+  function moveIndicator(tab) {
+    const navRect = nav.getBoundingClientRect();
+    const tabRect = tab.getBoundingClientRect();
+    const left = tabRect.left - navRect.left;
+    indicator.style.width = tabRect.width + 'px';
+    indicator.style.transform = `translateX(${left}px)`;
+  }
+
+  // Set initial position
+  const activeTab = nav.querySelector('.ntab.on');
+  if (activeTab) {
+    // instant position (no transition yet)
+    indicator.style.transition = 'none';
+    moveIndicator(activeTab);
+    setTimeout(() => {
+      indicator.style.transition = 'transform .35s cubic-bezier(.22,.68,0,1.2), width .35s cubic-bezier(.22,.68,0,1.2)';
+    }, 50);
+  }
+
+  // Intercept tab clicks
+  nav.querySelectorAll('.ntab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      setTimeout(() => moveIndicator(tab), 0);
+    });
+  });
+
+  // Hover magnetic pull (subtle)
+  nav.querySelectorAll('.ntab').forEach(tab => {
+    tab.addEventListener('mouseenter', () => {
+      const activeT = nav.querySelector('.ntab.on');
+      if (tab !== activeT) {
+        const navRect = nav.getBoundingClientRect();
+        const tabRect = tab.getBoundingClientRect();
+        const left = tabRect.left - navRect.left;
+        indicator.style.opacity = '.4';
+        indicator.style.width = tabRect.width + 'px';
+        indicator.style.transform = `translateX(${left}px)`;
+      }
+    });
+    tab.addEventListener('mouseleave', () => {
+      const activeT = nav.querySelector('.ntab.on');
+      if (activeT) {
+        indicator.style.opacity = '1';
+        moveIndicator(activeT);
+      }
+    });
+  });
+
+  // Resize
+  window.addEventListener('resize', () => {
+    const activeT = nav.querySelector('.ntab.on');
+    if (activeT) moveIndicator(activeT);
+  });
+}
+
+setTimeout(initMagneticNav, 200);
+
+/* ─────────────────────────────────────────
+   5. ODOMETER EFFECT on main balance
+───────────────────────────────────────── */
+
+function odoAnimate(el, targetNum, prefix) {
+  if (!el) return;
+  const targetStr = targetNum.toLocaleString('en-EG', {minimumFractionDigits:2, maximumFractionDigits:2});
+  const fullStr = (prefix || '') + targetStr;
+
+  // Build character columns
+  el.innerHTML = '';
+  const wrap = document.createElement('span');
+  wrap.className = 'odometer-wrap';
+  wrap.style.cssText = 'font:inherit;color:inherit;display:inline-flex;align-items:flex-end;overflow:hidden;';
+
+  for (let i = 0; i < fullStr.length; i++) {
+    const ch = fullStr[i];
+    const col = document.createElement('div');
+    col.style.cssText = 'position:relative;overflow:hidden;display:inline-block;vertical-align:bottom;';
+
+    if (/[0-9]/.test(ch)) {
+      const target = parseInt(ch);
+      const strip = document.createElement('div');
+      strip.className = 'odo-digit-col';
+      // Stack digits 0-9 below, animate to show target
+      let html = '';
+      for (let d = 9; d >= 0; d--) {
+        html += `<span style="line-height:1;text-align:center;display:block;">${d}</span>`;
+      }
+      strip.innerHTML = html;
+      // translate so target digit is visible
+      const offset = (9 - target); // how many positions from top
+      strip.style.transform = `translateY(${offset * -1}em)`;
+      // animate in
+      strip.style.transition = `transform ${.4 + i * .02}s cubic-bezier(.22,.68,0,1.2)`;
+      strip.style.transform = `translateY(${-9}em)`; // start at bottom
+      setTimeout(() => {
+        strip.style.transform = `translateY(${offset * -1}em)`;
+      }, 50 + i * 18);
+      col.style.height = '1em';
+      col.appendChild(strip);
+    } else {
+      col.textContent = ch;
+      col.style.opacity = '0';
+      col.style.transition = `opacity .2s ease ${i * .02}s`;
+      setTimeout(() => col.style.opacity = '1', 50 + i * 18);
+    }
+    wrap.appendChild(col);
+  }
+  el.appendChild(wrap);
+}
+
+// Patch countUp for balance display only (odometer)
+const _origCountUp2 = window.countUp;
+if (_origCountUp2 && !window._odoPatched) {
+  window._odoPatched = true;
+  window.countUp = function(elId, targetVal, duration, prefix, suffix) {
+    if (elId === 'balDisp') {
+      const el = document.getElementById('balDisp');
+      if (el) {
+        odoAnimate(el, Math.abs(targetVal), prefix || 'EGP ');
+        // maintain color class
+        return;
+      }
+    }
+    return _origCountUp2(elId, targetVal, duration, prefix, suffix);
+  };
+}
+
+/* ─────────────────────────────────────────
+   6. EMPTY STATE — INVITATION
+───────────────────────────────────────── */
+function patchEmptyState() {
+  // Override renderTx empty
+  const _origRenderTx = window.renderTx;
+  if (_origRenderTx) {
+    window.renderTx = function() {
+      _origRenderTx.call(this);
+      const el = document.getElementById('txList');
+      if (el) {
+        const emp = el.querySelector('.empty');
+        if (emp && window.txs && !window.txs.length) {
+          emp.innerHTML = `
+            <div class="empty-invite">
+              <div class="empty-coin">🪙</div>
+              <div class="empty-invite-title">خزينتك فاضية</div>
+              <div class="empty-invite-sub">ابدأ بتسجيل أول عملية مالية وتابع رصيدك</div>
+              <button class="empty-invite-btn" onclick="document.getElementById('txAmt').focus(); showToast('اكتب المبلغ وابدأ! ✨','ok')">
+                ★ سجّل أول عملية
+              </button>
+            </div>
+          `;
+        }
+      }
+    };
+  }
+
+  const _origRenderRecent = window.renderRecent;
+  if (_origRenderRecent) {
+    window.renderRecent = function() {
+      _origRenderRecent.call(this);
+      const el = document.getElementById('recentList');
+      if (el) {
+        const emp = el.querySelector('.empty');
+        if (emp) {
+          emp.innerHTML = `
+            <div class="empty-invite" style="padding:28px 16px">
+              <div class="empty-coin" style="width:48px;height:48px;font-size:22px">🪙</div>
+              <div class="empty-invite-title" style="font-size:14px">لا توجد عمليات بعد</div>
+              <div class="empty-invite-sub" style="font-size:11px">أضف أول دخل أو مصروف</div>
+            </div>
+          `;
+        }
+      }
+    };
+  }
+}
+setTimeout(patchEmptyState, 300);
+
+/* ─────────────────────────────────────────
+   8. THEME SWITCHER — CIRCULAR REVEAL
+───────────────────────────────────────── */
+function initThemeReveal() {
+  // Create overlay element
+  const overlay = document.createElement('div');
+  overlay.id = 'themeRevealOverlay';
+  document.body.appendChild(overlay);
+
+  const themeBtn = document.getElementById('themeBtn');
+  if (!themeBtn) return;
+
+  // Override toggleTheme
+  const _origToggleTheme = window.toggleTheme;
+  window.toggleTheme = function() {
+    // Get button position for origin point
+    const rect = themeBtn.getBoundingClientRect();
+    const rx = rect.left + rect.width / 2;
+    const ry = rect.top + rect.height / 2;
+
+    overlay.style.setProperty('--rx', rx + 'px');
+    overlay.style.setProperty('--ry', ry + 'px');
+
+    // Determine new theme color
+    const newTheme = (window.theme === 'dark') ? 'light' : 'dark';
+    overlay.style.setProperty('--reveal-bg', newTheme === 'light' ? '#F0EDE4' : '#060610');
+    overlay.style.clipPath = `circle(0px at ${rx}px ${ry}px)`;
+    overlay.style.transition = 'none';
+
+    void overlay.offsetWidth;
+
+    overlay.style.transition = 'clip-path .65s cubic-bezier(.22,.68,0,1.2)';
+    overlay.classList.add('revealing');
+
+    setTimeout(() => {
+      _origToggleTheme.call(this);
+      overlay.classList.remove('revealing');
+      overlay.style.clipPath = `circle(0px at ${rx}px ${ry}px)`;
+    }, 320);
+  };
+}
+
+initThemeReveal();
+
+/* ─────────────────────────────────────────
+   MOBILE NAV: also move indicator
+───────────────────────────────────────── */
+function patchMobileNav() {
+  const _origMbnClick = window.mbnClick;
+  if (_origMbnClick) {
+    window.mbnClick = function(tabName, el) {
+      _origMbnClick(tabName, el);
+      // trigger indicator update after desktop nav click
+      setTimeout(() => {
+        const nav = document.getElementById('mainNav');
+        if (!nav) return;
+        const activeT = nav.querySelector('.ntab.on');
+        const indicator = document.getElementById('navIndicator');
+        if (activeT && indicator) {
+          const navRect = nav.getBoundingClientRect();
+          const tabRect = activeT.getBoundingClientRect();
+          indicator.style.width = tabRect.width + 'px';
+          indicator.style.transform = `translateX(${tabRect.left - navRect.left}px)`;
+        }
+      }, 50);
+    };
+  }
+}
+setTimeout(patchMobileNav, 500);
+
+}); // end ready()
+})();
+</script>
+
 </body>
 </html>
