@@ -3950,7 +3950,6 @@ input:focus {
    ══════════════════════════════════════════ */
 input::placeholder, textarea::placeholder {
   color: var(--muted2);
-  font-style: italic;
   font-size: 13px;
 }
 
@@ -3979,14 +3978,7 @@ input::placeholder, textarea::placeholder {
   align-items: center;
   gap: 4px;
 }
-.tcat::before {
-  content: '';
-  display: inline-block;
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--gold);
-  flex-shrink: 0;
-}
+/* Category dot — removed: caused visual clutter with Arabic text */
 
 /* ══════════════════════════════════════════
    LIGHT MODE EXTRAS
@@ -4318,11 +4310,8 @@ function applyCatDotColors() {
   document.querySelectorAll('.tcat').forEach(el => {
     const cat = el.textContent.trim();
     const color = catColors[cat] || 'var(--gold)';
-    el.style.setProperty('--cat-dot-color', color);
-    const pseudo = el.querySelector('::before');
-    // Use data attribute instead since we can't directly style ::before with JS
     el.setAttribute('data-color', color);
-    el.style.color = color;
+    // Don't override el.style.color — keep default gold color from CSS
   });
 }
 
