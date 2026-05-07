@@ -190,6 +190,9 @@ h1{
   transition:color .4s,text-shadow .4s;
   letter-spacing:-1px;position:relative;overflow:hidden;
   font-feature-settings:"tnum" 1,"kern" 1;
+  direction:ltr;
+  unicode-bidi:embed;
+  text-align:right;
 }
 .bv::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent);animation:shimmer 3.5s ease-in-out infinite}
 @keyframes shimmer{0%{left:-100%}100%{left:220%}}
@@ -210,7 +213,7 @@ h1{
 .sb:hover{border-color:var(--bdr2);transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,0,0,0.3)}
 .sl{font-size:9px;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;font-family:var(--arabic)}
 .sl.inc{color:var(--green-l)}.sl.exp{color:var(--red-l)}
-.sv{font-family:var(--mono);font-size:22px;font-weight:600;font-feature-settings:"tnum" 1}
+.sv{font-family:var(--mono);font-size:22px;font-weight:600;font-feature-settings:"tnum" 1;direction:ltr;unicode-bidi:embed;}
 .sv.inc{color:var(--green-l);text-shadow:0 0 12px rgba(34,197,94,0.25)}
 .sv.exp{color:var(--red-l);text-shadow:0 0 12px rgba(255,77,90,0.25)}
 @keyframes statPop{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
@@ -224,7 +227,7 @@ h1{
 .ri:hover{border-color:var(--bdr2);transform:translateX(-2px)}
 .rdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .rdot.income{background:var(--green-l);box-shadow:0 0 6px rgba(34,197,94,.5)}.rdot.expense{background:var(--red-l);box-shadow:0 0 6px rgba(255,77,90,.5)}
-.ramt{font-family:var(--mono);font-size:14px;font-weight:500}
+.ramt{font-family:var(--mono);font-size:14px;font-weight:500;direction:ltr;unicode-bidi:embed;}
 .ramt.income{color:var(--green-l)}.ramt.expense{color:var(--red-l)}
 
 /* ─── FORM ─── */
@@ -292,7 +295,7 @@ textarea{resize:vertical;min-height:58px}
 .tn{font-size:14px;font-weight:600;margin-bottom:4px;font-family:var(--arabic)}
 .tm{font-size:11px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap;font-family:var(--arabic)}
 .tcat{color:var(--gold)}
-.ta{font-family:var(--mono);font-size:16px;font-weight:500}
+.ta{font-family:var(--mono);font-size:16px;font-weight:500;direction:ltr;unicode-bidi:embed;}
 .ta.income{color:var(--green-l)}.ta.expense{color:var(--red-l)}
 .txact{display:flex;gap:6px;margin-top:7px}
 .bsmall{padding:4px 11px;border-radius:7px;border:1px solid var(--bdr);background:transparent;font-size:11px;font-family:var(--arabic);cursor:pointer;transition:all .2s}
@@ -3591,11 +3594,13 @@ fxFetchRates();
   inset: 0;
   z-index: 3;
   pointer-events: none;
-  opacity: 0.038;
+  opacity: 0.018;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
   background-size: 256px 256px;
   animation: grainShift 0.4s steps(1) infinite;
   mix-blend-mode: overlay;
+  /* Keep below all interactive content */
+  z-index: 1;
 }
 @keyframes grainShift {
   0%  { transform: translate(0,0); }
@@ -3603,7 +3608,7 @@ fxFetchRates();
   50% { transform: translate(1%,2%); }
   75% { transform: translate(2%,-2%); }
 }
-body.light #grainOverlay { opacity: 0.025; mix-blend-mode: multiply; }
+body.light #grainOverlay { opacity: 0.012; mix-blend-mode: multiply; }
 
 /* ══════════════════════════════════════════
    AURORA BACKGROUND
@@ -3613,9 +3618,9 @@ body.light #grainOverlay { opacity: 0.025; mix-blend-mode: multiply; }
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.55;
+  opacity: 0.35;
 }
-body.light #auroraCanvas { opacity: 0.18; }
+body.light #auroraCanvas { opacity: 0.12; }
 
 /* ══════════════════════════════════════════
    CURSOR LIGHT
@@ -4493,31 +4498,9 @@ if (_origAddTx) {
 }
 
 /* ─────────────────────────────────────────
-   CUSTOM CURSOR (subtle star trail — desktop)
+   CUSTOM CURSOR TRAIL — DISABLED (causes clutter over Arabic text)
 ───────────────────────────────────────── */
-let trailActive = false;
-document.addEventListener('mousemove', e => {
-  if (Math.random() > 0.85) {
-    const star = document.createElement('div');
-    star.textContent = '·';
-    star.style.cssText = `
-      position:fixed;left:${e.clientX}px;top:${e.clientY}px;
-      color:rgba(212,160,23,0.4);font-size:${6+Math.random()*8}px;
-      pointer-events:none;z-index:9999;
-      animation:starFade .6s ease forwards;
-      transform:translate(-50%,-50%);
-    `;
-    document.body.appendChild(star);
-    setTimeout(() => star.remove(), 600);
-  }
-});
-
-if (!document.getElementById('starFadeStyle')) {
-  const s = document.createElement('style');
-  s.id = 'starFadeStyle';
-  s.textContent = '@keyframes starFade{from{opacity:.7;transform:translate(-50%,-50%) scale(1)}to{opacity:0;transform:translate(-50%,-80%) scale(.3)}}';
-  document.head.appendChild(s);
-}
+// Trail disabled to keep text readable
 
 /* ─────────────────────────────────────────
    PAGE LOADED — Remove loading shimmer
@@ -5256,14 +5239,14 @@ setTimeout(initMagneticNav, 200);
 
 function odoAnimate(el, targetNum, prefix) {
   if (!el) return;
-  const targetStr = targetNum.toLocaleString('en-EG', {minimumFractionDigits:2, maximumFractionDigits:2});
+  const targetStr = targetNum.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
   const fullStr = (prefix || '') + targetStr;
 
-  // Build character columns
+  // Build character columns — force LTR so digits don't reverse in RTL layout
   el.innerHTML = '';
   const wrap = document.createElement('span');
   wrap.className = 'odometer-wrap';
-  wrap.style.cssText = 'font:inherit;color:inherit;display:inline-flex;align-items:flex-end;overflow:hidden;';
+  wrap.style.cssText = 'font:inherit;color:inherit;display:inline-flex;align-items:flex-end;overflow:hidden;direction:ltr;unicode-bidi:embed;';
 
   for (let i = 0; i < fullStr.length; i++) {
     const ch = fullStr[i];
