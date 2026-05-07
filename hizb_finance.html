@@ -3678,36 +3678,8 @@ h1 {
   font-feature-settings: "tnum" 1;
 }
 
-/* Floating Labels */
-.fg {
-  position: relative;
-}
-.fg label {
-  position: absolute;
-  top: 50%;
-  right: 14px;
-  transform: translateY(-50%);
-  font-size: 12px;
-  color: var(--muted);
-  pointer-events: none;
-  transition: all .25s cubic-bezier(.22,.68,0,1.2);
-  background: transparent;
-  padding: 0 4px;
-  z-index: 1;
-  letter-spacing: 1px;
-}
-.fg input:focus + label,
-.fg input:not(:placeholder-shown) + label,
-.fg select:focus + label {
-  top: 0;
-  font-size: 9px;
-  color: var(--gold);
-  background: var(--s1);
-  letter-spacing: 2px;
-}
-/* Reorder label after input for CSS sibling selector */
-.fg input { order: 1; }
-.fg label { order: 2; }
+/* Floating Labels — DISABLED: causes overlap with Arabic text */
+/* Labels stay in their normal position above inputs */
 
 /* Better focus ring */
 input:focus, select:focus, textarea:focus, button:focus-visible {
@@ -4379,24 +4351,9 @@ function addStatGlow() {
 setTimeout(addStatGlow, 1000);
 
 /* ─────────────────────────────────────────
-   FLOATING LABEL REORDER (CSS sibling trick)
+   FLOATING LABEL REORDER — DISABLED
 ───────────────────────────────────────── */
-function initFloatingLabels() {
-  document.querySelectorAll('.fg').forEach(group => {
-    const input = group.querySelector('input:not([type="date"]):not([type="number"]), textarea');
-    const label = group.querySelector('label');
-    if (!input || !label) return;
-
-    // Add placeholder space to trigger CSS sibling selector
-    if (!input.placeholder) input.placeholder = ' ';
-
-    // Ensure label comes after input in DOM for CSS sibling selector
-    if (input.nextElementSibling !== label) {
-      group.appendChild(label);
-    }
-  });
-}
-setTimeout(initFloatingLabels, 400);
+// Disabled: caused label/placeholder overlap in Arabic RTL inputs
 
 /* ─────────────────────────────────────────
    BUTTON RIPPLE ENHANCED
