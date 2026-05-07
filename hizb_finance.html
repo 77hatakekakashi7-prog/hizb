@@ -76,8 +76,8 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;opac
 .login-box{width:90%;max-width:400px;background:var(--s1);border:1px solid var(--bdr2);border-radius:20px;padding:40px 36px;position:relative;overflow:hidden;animation:loginAppear .6s cubic-bezier(.22,.68,0,1.2) both;box-shadow:0 0 0 1px rgba(212,160,23,0.05),var(--shadow)}
 .login-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),var(--red),transparent)}
 @keyframes loginAppear{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
-.login-star{display:block;text-align:center;font-size:36px;margin-bottom:12px;animation:starSpin 6s ease-in-out infinite}
-@keyframes starSpin{0%,100%{transform:rotate(0deg) scale(1);filter:drop-shadow(0 0 6px rgba(193,18,31,.4))}50%{transform:rotate(36deg) scale(1.15);filter:drop-shadow(0 0 22px rgba(212,160,23,.8))}}
+.login-star{display:block;text-align:center;font-size:36px;margin-bottom:12px;color:#C1121F;animation:starSpin 6s ease-in-out infinite}
+@keyframes starSpin{0%,100%{transform:rotate(0deg) scale(1);filter:drop-shadow(0 0 8px rgba(193,18,31,.7)) drop-shadow(0 0 20px rgba(193,18,31,.3))}50%{transform:rotate(36deg) scale(1.15);filter:drop-shadow(0 0 22px rgba(193,18,31,1)) drop-shadow(0 0 40px rgba(255,77,90,.5))}}
 .login-title{font-family:var(--display);font-size:22px;font-weight:900;text-align:center;letter-spacing:2px;text-transform:uppercase;background:linear-gradient(135deg,var(--gold-l),var(--gold),var(--red-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
 .login-sub{text-align:center;font-size:11px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-bottom:32px}
 .lfield{margin-bottom:16px}
@@ -109,15 +109,9 @@ header::after{
   background:radial-gradient(ellipse 70% 60% at 50% 30%, rgba(212,160,23,0.04) 0%, transparent 70%);
   pointer-events:none;
 }
-.hstar{display:inline-block;font-size:28px;margin-bottom:8px;transition:transform .5s cubic-bezier(.22,.68,0,1.2);cursor:default}
+.hstar{display:inline-block;font-size:28px;margin-bottom:8px;transition:transform .5s cubic-bezier(.22,.68,0,1.2);cursor:default;color:#C1121F;filter:drop-shadow(0 0 8px rgba(193,18,31,.7));animation:starSpin 6s ease-in-out infinite}
 .hstar:hover{transform:rotate(72deg) scale(1.3)}
-h1{
-  font-family:var(--display);font-size:30px;font-weight:900;
-  letter-spacing:3px;text-transform:uppercase;
-  background:linear-gradient(135deg,var(--gold-l) 0%,var(--gold) 40%,var(--red-l) 70%,var(--gold-l) 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  filter:drop-shadow(0 2px 12px rgba(212,160,23,0.18));
-}
+h1{display:block}/* overridden below */
 .hsub{font-size:10px;color:var(--muted);letter-spacing:5px;margin-top:6px;text-transform:uppercase;font-family:var(--arabic)}
 .header-user{position:absolute;left:0;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:10px}
 .user-badge{
@@ -820,6 +814,155 @@ textarea{resize:vertical;min-height:58px}
   pointer-events:none;
 }
 
+/* ─── GLOW HOVER ON ALL CARDS ─── */
+.bal-card:hover,.fp:hover,.chart-c:hover,.chart-box:hover,.goal-c:hover,.cp:hover,
+.set-card:hover,.vlt-card:hover,.vlt-sidebar:hover,.hi:hover,.txi:hover,.fx-card:hover{
+  box-shadow:0 0 0 1px rgba(212,160,23,.25),0 0 28px rgba(212,160,23,.15),0 16px 48px rgba(0,0,0,.5)!important;
+  border-color:rgba(212,160,23,.35)!important;
+  transition:box-shadow .35s ease,border-color .35s ease,transform .2s ease!important;
+}
+.txi:hover{
+  box-shadow:0 0 18px rgba(212,160,23,.12),0 4px 16px rgba(0,0,0,.3)!important;
+}
+.txi.income:hover{ box-shadow:0 0 22px rgba(34,197,94,.2),0 4px 16px rgba(0,0,0,.3)!important; }
+.txi.expense:hover{ box-shadow:0 0 22px rgba(255,77,90,.2),0 4px 16px rgba(0,0,0,.3)!important; }
+
+/* ─── GLOW HOVER ON TABS ─── */
+.ntab:not(.on):hover{
+  background:rgba(212,160,23,.08)!important;
+  color:var(--gold-l)!important;
+  box-shadow:0 0 14px rgba(212,160,23,.15),inset 0 0 8px rgba(212,160,23,.05)!important;
+  transform:translateY(-1px);
+}
+.ntab.on{
+  box-shadow:0 4px 18px rgba(193,18,31,.4),0 0 0 1px rgba(193,18,31,.15),0 0 24px rgba(193,18,31,.2)!important;
+}
+
+/* ─── LIVE TYPING TITLE ─── */
+h1{
+  font-family:var(--display);font-size:30px;font-weight:900;
+  letter-spacing:3px;text-transform:uppercase;
+  background:linear-gradient(135deg,var(--gold-l) 0%,var(--gold) 40%,var(--red-l) 70%,var(--gold-l) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 2px 12px rgba(212,160,23,0.18));
+  min-height:40px;
+}
+h1 .typing-cursor{
+  display:inline-block;width:2px;height:0.9em;
+  background:var(--gold);margin-right:2px;vertical-align:middle;
+  animation:cursorBlink .75s step-end infinite;
+  -webkit-text-fill-color:var(--gold);
+}
+@keyframes cursorBlink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* ─── SNOW PARTICLES ─── */
+.snow-flake{
+  position:fixed;top:-10px;pointer-events:none;z-index:0;
+  color:#fff;font-size:10px;opacity:0;
+  animation:snowFall linear infinite;
+  text-shadow:0 0 4px rgba(255,255,255,.6);
+  user-select:none;
+}
+@keyframes snowFall{
+  0%{transform:translateY(-10px) rotate(0deg) translateX(0);opacity:0}
+  5%{opacity:.85}
+  95%{opacity:.4}
+  100%{transform:translateY(105vh) rotate(720deg) translateX(40px);opacity:0}
+}
+
+/* ─── SPARKLINE ON BALANCE CARD ─── */
+.bal-sparkline-wrap{
+  margin:12px 0 4px;height:44px;position:relative;overflow:hidden;
+}
+.bal-sparkline-wrap canvas{display:block;width:100%;height:44px}
+.bal-sparkline-label{
+  font-size:9px;color:var(--muted2);letter-spacing:2px;text-transform:uppercase;
+  font-family:var(--arabic);margin-bottom:4px;
+}
+
+/* ─── TRANSACTION CATEGORY ICON ─── */
+.tx-cat-icon{
+  width:36px;height:36px;border-radius:10px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;
+  background:rgba(212,160,23,.07);border:1px solid var(--bdr);
+  transition:transform .2s;
+}
+.txi:hover .tx-cat-icon{transform:scale(1.1)rotate(5deg)}
+.txi.income .tx-cat-icon{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.15)}
+.txi.expense .tx-cat-icon{background:rgba(255,77,90,.08);border-color:rgba(255,77,90,.15)}
+
+/* ─── BATTERY / PROGRESS BAR ANIMATION ─── */
+#txProgressOverlay{
+  position:fixed;inset:0;z-index:9998;pointer-events:none;
+  display:flex;align-items:center;justify-content:center;
+}
+.tx-battery-wrap{
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  background:rgba(6,6,16,.92);border:1px solid var(--bdr2);
+  border-radius:18px;padding:20px 28px;
+  backdrop-filter:blur(20px);
+  box-shadow:0 0 40px rgba(0,0,0,.7);
+  animation:batteryIn .3s cubic-bezier(.22,.68,0,1.2) both;
+  min-width:160px;
+}
+@keyframes batteryIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+.tx-battery-label{font-size:11px;letter-spacing:2px;color:var(--muted);font-family:var(--arabic);text-transform:uppercase}
+.tx-battery-amt{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:1px}
+.tx-battery-amt.income{color:var(--green-l);text-shadow:0 0 12px rgba(34,197,94,.5)}
+.tx-battery-amt.expense{color:var(--red-l);text-shadow:0 0 12px rgba(255,77,90,.5)}
+.tx-battery-body{
+  width:56px;position:relative;
+  border:2px solid var(--muted);border-radius:6px;
+  overflow:visible;
+}
+.tx-battery-body::before{
+  content:'';position:absolute;top:50%;right:-7px;transform:translateY(-50%);
+  width:5px;height:12px;background:var(--muted);border-radius:0 3px 3px 0;
+}
+.tx-battery-track{
+  width:100%;height:52px;border-radius:4px;overflow:hidden;
+  background:rgba(255,255,255,.05);position:relative;
+}
+.tx-battery-fill{
+  position:absolute;bottom:0;left:0;right:0;height:0%;
+  border-radius:3px;transition:height 1s cubic-bezier(.22,.68,0,1.2);
+  background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.08) 0,rgba(255,255,255,.08) 6px,transparent 6px,transparent 12px);
+}
+.tx-battery-fill.income{background-color:var(--green-l);box-shadow:0 0 12px rgba(34,197,94,.4)}
+.tx-battery-fill.expense{background-color:var(--red-l);box-shadow:0 0 12px rgba(255,77,90,.4)}
+.tx-battery-pct{
+  font-family:var(--mono);font-size:10px;color:var(--muted2);text-align:center;margin-top:4px;
+}
+.tx-battery-wrap.fade-out{
+  animation:batteryOut .4s ease forwards;
+}
+@keyframes batteryOut{to{transform:scale(.85);opacity:0}}
+
+/* ─── FLYING MONEY (coin trail) ─── */
+.money-coin{
+  position:fixed;pointer-events:none;z-index:9999;
+  width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-family:var(--mono);font-weight:700;
+  border:2px solid;
+  animation:coinFly cubic-bezier(.22,.68,0,1.2) forwards;
+}
+.money-coin.income{
+  background:rgba(34,197,94,.2);border-color:var(--green-l);color:var(--green-l);
+  box-shadow:0 0 12px rgba(34,197,94,.4);
+}
+.money-coin.expense{
+  background:rgba(255,77,90,.2);border-color:var(--red-l);color:var(--red-l);
+  box-shadow:0 0 12px rgba(255,77,90,.4);
+}
+@keyframes coinFly{
+  0%{opacity:1;transform:translateY(0) scale(1)}
+  40%{opacity:1;transform:translateY(var(--fly-mid)) scale(1.2)}
+  100%{opacity:0;transform:translateY(var(--fly-end)) scale(.4) rotate(var(--fly-rot))}
+}
+
+
 </style>
 </head>
 <body>
@@ -930,7 +1073,7 @@ textarea{resize:vertical;min-height:58px}
       <button class="btn-logout" id="logoutBtn" onclick="logout()">خروج</button>
     </div>
     <span class="hstar">★</span>
-    <h1>الحزب الاشتراكى</h1>
+    <h1 id="siteTitle"></h1>
     <div class="hsub" id="appSubtitle">Financial Command Center</div>
   </header>
 
@@ -951,6 +1094,8 @@ textarea{resize:vertical;min-height:58px}
     <div class="bal-card">
       <div class="bl" data-ar="الرصيد الحالي" data-en="CURRENT BALANCE">الرصيد الحالي</div>
       <div class="bv zer" id="balDisp">EGP 0.00</div>
+      <div class="bal-sparkline-label" data-ar="تريند آخر 10 عمليات" data-en="Last 10 transactions trend">تريند آخر 10 عمليات</div>
+      <div class="bal-sparkline-wrap"><canvas id="sparklineCanvas"></canvas></div>
       <div class="bbar-t"><div class="bbar-f" id="balBar" style="width:50%;background:var(--gold)"></div></div>
       <div class="bbar-labels">
         <span data-ar="عجز" data-en="Deficit">عجز</span>
@@ -1860,6 +2005,7 @@ function toggleLang() {
   lang = lang === 'ar' ? 'en' : 'ar';
   localStorage.setItem('hizb_lang', lang);
   applyLang();
+  if(window._retypeTitle) window._retypeTitle();
 }
 
 function applyTheme() {
@@ -2303,7 +2449,7 @@ function render(){
   const alertEl=document.getElementById('alertBar');
   alertEl.classList.toggle('on',inc>0&&(exp/inc)*100>=thresh);
   document.getElementById('alertTxt').innerHTML=t('alertText')+' <span id="alertPct">'+thresh+'</span>'+t('alertText2');
-  renderRecent();renderTx();updateGoal();
+  renderRecent();renderTx();updateGoal();drawSparkline();
 }
 
 function renderRecent(){
@@ -2332,18 +2478,26 @@ function renderTx(){
   });
   const el=document.getElementById('txList');
   if(!f.length){el.innerHTML='<div class="empty">'+t('emptyTx')+'</div>';return;}
-  el.innerHTML=f.map((tx,i)=>`
+  el.innerHTML=f.map((tx,i)=>{
+    // find icon for this category
+    const catObj = userCats.find(c=>c.name===tx.cat);
+    const catIcon = catObj ? catObj.icon : (tx.type==='income'?'💚':'🔴');
+    return `
     <div class="txi ${tx.type}" data-txid="${tx.id}" style="animation-delay:${i*0.04}s">
-      <div>
-        <div class="tn">${tx.dsc}</div>
-        <div class="tm"><span class="tcat">${tx.cat}</span><span>${tx.dt}</span>${tx.note?`<span style="font-style:italic">${tx.note}</span>`:''}</div>
-        <div class="txact">
-          <button class="bsmall be" onclick="openEdit(${tx.id})">${t('editIncome')}</button>
-          <button class="bsmall bd" onclick="openDeleteModal(${tx.id})">${t('deleteBtn')}</button>
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        <div class="tx-cat-icon">${catIcon}</div>
+        <div>
+          <div class="tn">${tx.dsc}</div>
+          <div class="tm"><span class="tcat">${tx.cat}</span><span>${tx.dt}</span>${tx.note?`<span style="font-style:italic">${tx.note}</span>`:''}</div>
+          <div class="txact">
+            <button class="bsmall be" onclick="openEdit(${tx.id})">${t('editIncome')}</button>
+            <button class="bsmall bd" onclick="openDeleteModal(${tx.id})">${t('deleteBtn')}</button>
+          </div>
         </div>
       </div>
       <div style="text-align:left"><div class="ta ${tx.type}">${tx.type==='income'?'+':'-'} EGP ${fmt(tx.amt)}</div></div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 function renderHist(){
@@ -3054,21 +3208,275 @@ async function vltInit() {
 }
 
 /* ════════════════════════════════════════════
-   PARTICLES
+   SNOW PARTICLES (replace old particles)
    ════════════════════════════════════════════ */
 function spawnParticles(){
-  const colors=['#C1121F','#D4A017','#F5C842','#FF4D5A','rgba(212,160,23,.7)'];
-  function spawn(){
-    const p=document.createElement('div');p.className='particle';
-    const sz=2+Math.random()*4;
-    p.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}vw;bottom:${-sz}px;background:${colors[Math.floor(Math.random()*colors.length)]};animation-duration:${7+Math.random()*10}s;animation-delay:${Math.random()*3}s;filter:blur(${Math.random()>.6?'1px':'0'});`;
-    document.body.appendChild(p);
-    const dur=(parseFloat(p.style.animationDuration)||8)*1000+(parseFloat(p.style.animationDelay)||0)*1000+600;
-    setTimeout(()=>p.remove(),dur);
+  const snowChars = ['❄','❅','❆','·','*','•'];
+  function spawnSnow(){
+    const s = document.createElement('div');
+    s.className = 'snow-flake';
+    const sz = 8 + Math.random()*14;
+    const dur = 6 + Math.random()*10;
+    const delay = Math.random()*4;
+    s.textContent = snowChars[Math.floor(Math.random()*snowChars.length)];
+    s.style.cssText = `left:${Math.random()*100}vw;font-size:${sz}px;animation-duration:${dur}s;animation-delay:${delay}s;opacity:0;`;
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),(dur+delay)*1000+500);
   }
-  for(let i=0;i<14;i++)spawn();
-  setInterval(spawn,1600);
+  for(let i=0;i<18;i++){
+    setTimeout(()=>spawnSnow(), Math.random()*4000);
+  }
+  setInterval(()=>spawnSnow(), 600);
 }
+
+/* ════════════════════════════════════════════
+   LIVE TYPING TITLE
+   ════════════════════════════════════════════ */
+function initTypingTitle(){
+  const el = document.getElementById('siteTitle');
+  if(!el) return;
+  const texts = {ar:'الحزب الاشتراكى', en:'Al-Hizb Al-Ishtiraki'};
+  let typing = false;
+  let timeouts = [];
+
+  function clearAll(){ timeouts.forEach(t=>clearTimeout(t)); timeouts=[];}
+
+  function typeText(){
+    const text = texts[lang] || texts.ar;
+    el.innerHTML = '';
+    let i = 0;
+    clearAll();
+    typing = true;
+    function addChar(){
+      if(i < text.length){
+        // rebuild: text so far + cursor
+        el.innerHTML = text.substring(0,i+1) + '<span class="typing-cursor"></span>';
+        i++;
+        const delay = 55 + Math.random()*40;
+        timeouts.push(setTimeout(addChar, delay));
+      } else {
+        // done typing — wait then erase
+        timeouts.push(setTimeout(eraseText, 2800));
+      }
+    }
+    addChar();
+  }
+
+  function eraseText(){
+    const text = texts[lang] || texts.ar;
+    let i = text.length;
+    function removeChar(){
+      if(i > 0){
+        i--;
+        el.innerHTML = text.substring(0,i) + '<span class="typing-cursor"></span>';
+        timeouts.push(setTimeout(removeChar, 35 + Math.random()*25));
+      } else {
+        // all erased — wait then retype
+        timeouts.push(setTimeout(typeText, 400));
+      }
+    }
+    removeChar();
+  }
+
+  typeText();
+  // Re-run when lang changes
+  window._retypeTitle = ()=>{ clearAll(); typeText(); };
+}
+
+/* ════════════════════════════════════════════
+   SPARKLINE CHART
+   ════════════════════════════════════════════ */
+let sparkChart = null;
+function drawSparkline(){
+  const canvas = document.getElementById('sparklineCanvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const isDark = !document.body.classList.contains('light');
+
+  // build running balance from last 10 txs (oldest first)
+  const last10 = txs.slice(0, 10).reverse();
+  if(last10.length < 2){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    // draw flat line
+    const w=canvas.offsetWidth||300, h=44;
+    canvas.width=w; canvas.height=h;
+    ctx.strokeStyle='rgba(212,160,23,.25)';
+    ctx.lineWidth=1.5;
+    ctx.setLineDash([4,4]);
+    ctx.beginPath();ctx.moveTo(0,h/2);ctx.lineTo(w,h/2);ctx.stroke();
+    return;
+  }
+
+  const points = [];
+  let running = 0;
+  last10.forEach(tx=>{
+    running += tx.type==='income' ? tx.amt : -tx.amt;
+    points.push(running);
+  });
+
+  const w = canvas.offsetWidth||300, h = 44;
+  canvas.width = w; canvas.height = h;
+  const min = Math.min(...points), max = Math.max(...points);
+  const range = max-min || 1;
+  const pad = 4;
+
+  const toX = i => pad + (i/(points.length-1))*(w-pad*2);
+  const toY = v => h-pad - ((v-min)/range)*(h-pad*2);
+
+  // gradient fill
+  const lastVal = points[points.length-1];
+  const isPos = lastVal >= 0;
+  const grad = ctx.createLinearGradient(0,0,0,h);
+  if(isPos){
+    grad.addColorStop(0,'rgba(34,197,94,.3)');
+    grad.addColorStop(1,'rgba(34,197,94,.02)');
+  } else {
+    grad.addColorStop(0,'rgba(255,77,90,.02)');
+    grad.addColorStop(1,'rgba(255,77,90,.3)');
+  }
+
+  // fill area
+  ctx.beginPath();
+  ctx.moveTo(toX(0), h);
+  ctx.lineTo(toX(0), toY(points[0]));
+  for(let i=1;i<points.length;i++){
+    const cpx = (toX(i-1)+toX(i))/2;
+    ctx.bezierCurveTo(cpx, toY(points[i-1]), cpx, toY(points[i]), toX(i), toY(points[i]));
+  }
+  ctx.lineTo(toX(points.length-1), h);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // line
+  ctx.beginPath();
+  ctx.moveTo(toX(0), toY(points[0]));
+  for(let i=1;i<points.length;i++){
+    const cpx = (toX(i-1)+toX(i))/2;
+    ctx.bezierCurveTo(cpx, toY(points[i-1]), cpx, toY(points[i]), toX(i), toY(points[i]));
+  }
+  ctx.strokeStyle = isPos ? '#22C55E' : '#FF4D5A';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([]);
+  ctx.stroke();
+
+  // dots
+  points.forEach((v,i)=>{
+    ctx.beginPath();
+    ctx.arc(toX(i), toY(v), 3, 0, Math.PI*2);
+    ctx.fillStyle = isPos ? '#22C55E' : '#FF4D5A';
+    ctx.fill();
+    ctx.strokeStyle = isDark ? '#060610' : '#fff';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  });
+
+  // last dot bigger + glow
+  const lx = toX(points.length-1), ly = toY(points[points.length-1]);
+  ctx.shadowBlur = 10;
+  ctx.shadowColor = isPos ? '#22C55E' : '#FF4D5A';
+  ctx.beginPath();
+  ctx.arc(lx, ly, 5, 0, Math.PI*2);
+  ctx.fillStyle = isPos ? '#22C55E' : '#FF4D5A';
+  ctx.fill();
+  ctx.shadowBlur = 0;
+}
+
+/* ════════════════════════════════════════════
+   BATTERY PROGRESS + FLYING COINS ANIMATION
+   ════════════════════════════════════════════ */
+function showBatteryAnimation(amt, type, sourceEl, destEl){
+  // 1) spawn flying coins from source → dest
+  spawnFlyingCoins(amt, type, sourceEl, destEl);
+
+  // 2) show battery overlay
+  const overlay = document.getElementById('txProgressOverlay');
+  overlay.style.display = 'flex';
+
+  const isIncome = type === 'income';
+  const label = isIncome
+    ? (lang==='ar' ? '✦ دخل جديد' : '✦ Income Added')
+    : (lang==='ar' ? '✦ مصروف جديد' : '✦ Expense Added');
+
+  const wrap = document.createElement('div');
+  wrap.className = 'tx-battery-wrap';
+  wrap.innerHTML = `
+    <div class="tx-battery-label">${label}</div>
+    <div class="tx-battery-amt ${type}">${isIncome?'+':'-'} EGP ${fmt(amt)}</div>
+    <div class="tx-battery-body">
+      <div class="tx-battery-track">
+        <div class="tx-battery-fill ${type}" id="battFill" style="height:0%"></div>
+      </div>
+    </div>
+    <div class="tx-battery-pct" id="battPct">0%</div>
+  `;
+  overlay.innerHTML = '';
+  overlay.appendChild(wrap);
+
+  // animate fill
+  let pct = 0;
+  const target = 100;
+  const step = () => {
+    pct = Math.min(pct + 4, target);
+    const fill = document.getElementById('battFill');
+    const pctEl = document.getElementById('battPct');
+    if(fill) fill.style.height = pct + '%';
+    if(pctEl) pctEl.textContent = pct + '%';
+    if(pct < target) requestAnimationFrame(step);
+    else {
+      // fade out after 600ms
+      setTimeout(()=>{
+        wrap.classList.add('fade-out');
+        setTimeout(()=>{ overlay.style.display='none'; overlay.innerHTML=''; }, 450);
+      }, 600);
+    }
+  };
+  setTimeout(()=>requestAnimationFrame(step), 100);
+}
+
+function spawnFlyingCoins(amt, type, sourceEl, destEl){
+  if(!sourceEl) return;
+  const srcRect = sourceEl.getBoundingClientRect();
+  const startX = srcRect.left + srcRect.width/2;
+  const startY = srcRect.top + window.scrollY;
+
+  // figure out destination (txList top area)
+  let destY = startY + 280;
+  if(destEl){
+    const dRect = destEl.getBoundingClientRect();
+    destY = dRect.top + window.scrollY + 20;
+  }
+
+  const count = Math.min(6, Math.max(3, Math.floor(amt/50)));
+  const symbol = type==='income' ? '＋' : '－';
+
+  for(let i=0;i<count;i++){
+    const coin = document.createElement('div');
+    coin.className = `money-coin ${type}`;
+    coin.textContent = symbol;
+
+    const offsetX = (Math.random()-0.5)*60;
+    const midY = startY - 60 - Math.random()*30;
+    const flyMid = `${midY - startY}px`;
+    const flyEnd = `${destY - startY + 30}px`;
+    const rot = (Math.random()-0.5)*360;
+    const dur = 0.7 + Math.random()*0.3;
+    const delay = i * 0.08;
+
+    coin.style.cssText = `
+      left:${startX + offsetX - 16}px;
+      top:${startY - 16}px;
+      --fly-mid:${flyMid};
+      --fly-end:${flyEnd};
+      --fly-rot:${rot}deg;
+      animation-duration:${dur}s;
+      animation-delay:${delay}s;
+    `;
+    document.body.appendChild(coin);
+    setTimeout(()=>coin.remove(), (dur+delay)*1000+100);
+  }
+}
+
 /* ════════════════════════════════════════════
    SETTINGS TAB
    ════════════════════════════════════════════ */
@@ -3482,17 +3890,12 @@ document.addEventListener('click', e => {
 });
 
 /* ════════════════════════════════════════════
-   FLY-UP AMOUNT ANIMATION
+   FLY-UP AMOUNT ANIMATION (legacy kept for compat)
    ════════════════════════════════════════════ */
 function flyUpAmount(amount, type, sourceEl) {
-  if(!sourceEl) return;
-  const rect = sourceEl.getBoundingClientRect();
-  const el = document.createElement('div');
-  el.className = 'flyup-amount ' + type;
-  el.textContent = (type==='income'?'+':'-') + ' EGP ' + fmt(amount);
-  el.style.cssText = `left:${rect.left+rect.width/2}px;top:${rect.top+window.scrollY-10}px;transform:translateX(-50%)`;
-  document.body.appendChild(el);
-  el.addEventListener('animationend', ()=>el.remove());
+  // now uses battery + coins animation instead
+  const destEl = document.getElementById('txList');
+  showBatteryAnimation(amount, type, sourceEl, destEl);
 }
 
 
@@ -3506,6 +3909,7 @@ applyTheme();
 catLoad();
 catPopulateSelects();
 fxFetchRates();
+initTypingTitle();
 
 // Auto-login if token exists
 (async () => {
@@ -3531,6 +3935,9 @@ fxFetchRates();
   checkServer();
 })();
 </script>
+
+<!-- TX BATTERY PROGRESS OVERLAY -->
+<div id="txProgressOverlay" style="display:none"></div>
 
 <!-- MOBILE BOTTOM NAVIGATION -->
 <div id="mobileBottomNav">
