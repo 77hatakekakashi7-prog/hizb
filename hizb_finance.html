@@ -3565,7 +3565,974 @@ fxFetchRates();
 
 <!-- ═══════════════════════════════════════════════════════
      CINEMATIC ENHANCEMENTS — إضافات سينمائية
-     أضف ده قبل </body> في hizb_finance.html
+     أضف ده قبل <!-- ═══════════════════════════════════════════════════════
+     VISUAL ENHANCEMENTS v2 — تحسينات بصرية متقدمة
+     ═══════════════════════════════════════════════════════ -->
+
+<style>
+/* ══════════════════════════════════════════
+   GOOGLE FONTS — Cairo Play
+   ══════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Cairo+Play:wght@300;400;600;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+/* ══════════════════════════════════════════
+   ROOT OVERRIDES
+   ══════════════════════════════════════════ */
+:root {
+  --arabic: 'Cairo Play', 'Noto Naskh Arabic', serif;
+  --cursor-glow: rgba(212,160,23,0.12);
+}
+
+/* ══════════════════════════════════════════
+   GRAIN TEXTURE OVERLAY
+   ══════════════════════════════════════════ */
+#grainOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0.038;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  animation: grainShift 0.4s steps(1) infinite;
+  mix-blend-mode: overlay;
+}
+@keyframes grainShift {
+  0%  { transform: translate(0,0); }
+  25% { transform: translate(-2%,-1%); }
+  50% { transform: translate(1%,2%); }
+  75% { transform: translate(2%,-2%); }
+}
+body.light #grainOverlay { opacity: 0.025; mix-blend-mode: multiply; }
+
+/* ══════════════════════════════════════════
+   AURORA BACKGROUND
+   ══════════════════════════════════════════ */
+#auroraCanvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.55;
+}
+body.light #auroraCanvas { opacity: 0.18; }
+
+/* ══════════════════════════════════════════
+   CURSOR LIGHT
+   ══════════════════════════════════════════ */
+#cursorLight {
+  position: fixed;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 4;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(212,160,23,0.07) 0%, transparent 70%);
+  transition: opacity .3s ease;
+  mix-blend-mode: screen;
+}
+body.light #cursorLight {
+  background: radial-gradient(circle, rgba(155,114,16,0.05) 0%, transparent 70%);
+  mix-blend-mode: multiply;
+}
+
+/* ══════════════════════════════════════════
+   REACTIVE BACKGROUND TINT
+   ══════════════════════════════════════════ */
+#reactiveBg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  transition: background 2s ease;
+}
+
+/* ══════════════════════════════════════════
+   TYPOGRAPHY UPGRADES
+   ══════════════════════════════════════════ */
+body {
+  font-family: var(--arabic) !important;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Variable weight headings */
+h1 {
+  font-family: 'Cairo Play', serif !important;
+  font-weight: 900 !important;
+  letter-spacing: 4px !important;
+}
+
+.bv {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "kern" 1, "ss01" 1;
+}
+
+.sv, .ramt, .ta, .hsum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Floating Labels */
+.fg {
+  position: relative;
+}
+.fg label {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: var(--muted);
+  pointer-events: none;
+  transition: all .25s cubic-bezier(.22,.68,0,1.2);
+  background: transparent;
+  padding: 0 4px;
+  z-index: 1;
+  letter-spacing: 1px;
+}
+.fg input:focus + label,
+.fg input:not(:placeholder-shown) + label,
+.fg select:focus + label {
+  top: 0;
+  font-size: 9px;
+  color: var(--gold);
+  background: var(--s1);
+  letter-spacing: 2px;
+}
+/* Reorder label after input for CSS sibling selector */
+.fg input { order: 1; }
+.fg label { order: 2; }
+
+/* Better focus ring */
+input:focus, select:focus, textarea:focus, button:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--gold-d), 0 0 12px rgba(212,160,23,0.2) !important;
+}
+
+/* Custom selection color */
+::selection {
+  background: rgba(212,160,23,0.3);
+  color: var(--txt);
+}
+::-moz-selection {
+  background: rgba(212,160,23,0.3);
+  color: var(--txt);
+}
+
+/* ══════════════════════════════════════════
+   CUSTOM SCROLLBAR
+   ══════════════════════════════════════════ */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--gold-d), var(--red-d));
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--gold), var(--red));
+}
+
+/* ══════════════════════════════════════════
+   FROSTED GLASS + CHROMATIC ABERRATION
+   ══════════════════════════════════════════ */
+.bal-card,
+.fp,
+.nav,
+.txi,
+.hi,
+.vlt-card,
+.set-card {
+  position: relative;
+}
+
+/* Chromatic edge on cards */
+.bal-card::before,
+.fp::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg,
+    rgba(212,160,23,0.15) 0%,
+    rgba(193,18,31,0.08) 50%,
+    rgba(212,160,23,0.1) 100%
+  );
+  z-index: -1;
+  filter: blur(1px);
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════════
+   3D CARD TILT
+   ══════════════════════════════════════════ */
+.bal-card {
+  transform-style: preserve-3d;
+  transition: transform .1s ease, box-shadow .3s ease !important;
+  will-change: transform;
+}
+
+/* ══════════════════════════════════════════
+   SPOTLIGHT ON ACTIVE ELEMENTS
+   ══════════════════════════════════════════ */
+.tb.ai:focus-within,
+.tb.ai:hover {
+  box-shadow: 0 0 0 1px rgba(34,197,94,.3), 0 0 24px rgba(34,197,94,.15), inset 0 0 16px rgba(34,197,94,.05) !important;
+}
+.tb.ae:focus-within,
+.tb.ae:hover {
+  box-shadow: 0 0 0 1px rgba(193,18,31,.3), 0 0 24px rgba(193,18,31,.18), inset 0 0 16px rgba(193,18,31,.05) !important;
+}
+
+input:focus {
+  box-shadow: 0 0 0 3px rgba(212,160,23,0.1), 0 0 20px rgba(212,160,23,0.06) !important;
+}
+
+/* ══════════════════════════════════════════
+   BENTO GRID DASHBOARD
+   ══════════════════════════════════════════ */
+#tc-dashboard .bstats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+/* ══════════════════════════════════════════
+   SPRING PHYSICS BUTTONS
+   ══════════════════════════════════════════ */
+.bsub, .btn-login, .bcp, .bg, .fx-btn, .set-btn-gold, .set-btn-red,
+.vlt-add-btn, .bxp, .bcancel, .bsave, .bconfirm {
+  transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease, opacity .15s ease !important;
+}
+.bsub:hover, .btn-login:hover, .bg:hover, .fx-btn:hover {
+  transform: translateY(-2px) scale(1.01) !important;
+}
+.bsub:active, .btn-login:active, .bg:active, .fx-btn:active {
+  transform: translateY(1px) scale(.97) !important;
+  transition-duration: .08s !important;
+}
+
+/* ══════════════════════════════════════════
+   STAGGERED LIST ENTRANCE
+   ══════════════════════════════════════════ */
+.txi {
+  animation: txSlideIn .4s cubic-bezier(.22,.68,0,1.2) both !important;
+}
+@keyframes txSlideIn {
+  from { opacity:0; transform:translateY(16px) scale(.98); }
+  to   { opacity:1; transform:none; }
+}
+
+/* ══════════════════════════════════════════
+   LIQUID TAB TRANSITIONS
+   ══════════════════════════════════════════ */
+.tc {
+  animation: liquidIn .45s cubic-bezier(.22,.68,0,1.2) both !important;
+}
+@keyframes liquidIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scaleY(.97);
+    transform-origin: top center;
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ══════════════════════════════════════════
+   TRANSACTION ITEMS — SPRING HOVER
+   ══════════════════════════════════════════ */
+.txi {
+  transition: transform .25s cubic-bezier(.34,1.56,.64,1), border-color .2s, box-shadow .2s !important;
+}
+.txi:hover {
+  transform: translateX(4px) scale(1.005) !important;
+}
+
+/* ══════════════════════════════════════════
+   NAV TABS — SPRING
+   ══════════════════════════════════════════ */
+.ntab {
+  transition: color .2s ease !important;
+}
+.ntab:hover:not(.on) {
+  color: var(--txt) !important;
+  transform: none !important;
+}
+
+/* ══════════════════════════════════════════
+   HISTORY ITEMS
+   ══════════════════════════════════════════ */
+.hi {
+  transition: transform .25s cubic-bezier(.34,1.56,.64,1), border-color .2s !important;
+}
+.hi:hover {
+  transform: translateX(3px) !important;
+}
+
+/* ══════════════════════════════════════════
+   VAULT CARDS SPRING
+   ══════════════════════════════════════════ */
+.vlt-card {
+  transition: transform .25s cubic-bezier(.34,1.56,.64,1), border-color .2s, box-shadow .2s !important;
+}
+.vlt-card:hover {
+  transform: translateX(4px) scale(1.003) !important;
+}
+
+/* ══════════════════════════════════════════
+   BALANCE CARD — REACTIVE GLOW
+   ══════════════════════════════════════════ */
+.bal-card.reactive-pos {
+  box-shadow:
+    0 0 40px rgba(34,197,94,0.12),
+    0 8px 40px rgba(0,0,0,0.6),
+    inset 0 1px 0 rgba(34,197,94,0.08) !important;
+}
+.bal-card.reactive-neg {
+  box-shadow:
+    0 0 40px rgba(193,18,31,0.15),
+    0 8px 40px rgba(0,0,0,0.6),
+    inset 0 1px 0 rgba(193,18,31,0.08) !important;
+}
+
+/* ══════════════════════════════════════════
+   STAT BOXES — GAUGES
+   ══════════════════════════════════════════ */
+.sb {
+  overflow: hidden;
+  transition: transform .25s cubic-bezier(.34,1.56,.64,1) !important;
+}
+.sb:hover { transform: translateY(-2px) !important; }
+
+/* ══════════════════════════════════════════
+   HEADER STAR — ENHANCED
+   ══════════════════════════════════════════ */
+.hstar {
+  display: inline-block;
+  filter: drop-shadow(0 0 8px rgba(212,160,23,.5));
+  transition: filter .3s ease, transform .5s cubic-bezier(.34,1.56,.64,1) !important;
+}
+.hstar:hover {
+  filter: drop-shadow(0 0 20px rgba(212,160,23,.8)) !important;
+  transform: rotate(72deg) scale(1.4) !important;
+}
+
+/* ══════════════════════════════════════════
+   MODAL — ENHANCED ENTRANCE
+   ══════════════════════════════════════════ */
+.modal {
+  animation: modalSpring .4s cubic-bezier(.34,1.56,.64,1) both !important;
+}
+@keyframes modalSpring {
+  from { opacity:0; transform:scale(.88) translateY(20px); }
+  to   { opacity:1; transform:none; }
+}
+
+/* ══════════════════════════════════════════
+   TOAST — SPRING
+   ══════════════════════════════════════════ */
+.toast {
+  animation: toastSpring .4s cubic-bezier(.34,1.56,.64,1) both !important;
+  border-radius: 24px !important;
+  padding: 12px 24px !important;
+  font-family: var(--arabic) !important;
+  font-weight: 600 !important;
+  letter-spacing: .5px !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+}
+@keyframes toastSpring {
+  from { opacity:0; transform:translateX(-50%) translateY(24px) scale(.9); }
+  to   { opacity:1; transform:translateX(-50%) translateY(0) scale(1); }
+}
+
+/* ══════════════════════════════════════════
+   GOLD DIVIDER LINES
+   ══════════════════════════════════════════ */
+.set-divider, .pclose {
+  border-color: var(--bdr) !important;
+  position: relative;
+}
+.set-divider::after {
+  content: '★';
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%,-50%);
+  font-size: 10px;
+  color: var(--gold-d);
+  background: var(--s1);
+  padding: 0 8px;
+}
+
+/* ══════════════════════════════════════════
+   INPUT PLACEHOLDER STYLE
+   ══════════════════════════════════════════ */
+input::placeholder, textarea::placeholder {
+  color: var(--muted2);
+  font-style: italic;
+  font-size: 13px;
+}
+
+/* ══════════════════════════════════════════
+   BUTTON SHIMMER EFFECT
+   ══════════════════════════════════════════ */
+.bsub::after, .btn-login::after, .bg::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -110%;
+  width: 80%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.15), transparent);
+  transform: skewX(-20deg);
+  transition: left .6s ease;
+  pointer-events: none;
+}
+.bsub:hover::after, .btn-login:hover::after, .bg:hover::after {
+  left: 130%;
+}
+
+/* ══════════════════════════════════════════
+   CATEGORY BADGES — COLORED DOTS
+   ══════════════════════════════════════════ */
+.tcat {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.tcat::before {
+  content: '';
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════════
+   LIGHT MODE EXTRAS
+   ══════════════════════════════════════════ */
+body.light .bal-card {
+  background: rgba(255,255,255,0.85) !important;
+}
+body.light .nav {
+  background: rgba(255,255,255,0.8) !important;
+}
+body.light .txi {
+  background: rgba(255,255,255,0.9) !important;
+}
+
+/* ══════════════════════════════════════════
+   SIDEBAR USER BADGE GLOW
+   ══════════════════════════════════════════ */
+.user-badge {
+  transition: box-shadow .3s ease, border-color .3s ease !important;
+}
+.user-badge:hover {
+  border-color: var(--gold-d) !important;
+  box-shadow: 0 0 16px rgba(212,160,23,.2) !important;
+}
+
+/* ══════════════════════════════════════════
+   SECTION LABELS — ANIMATED UNDERLINE
+   ══════════════════════════════════════════ */
+.section-label {
+  position: relative;
+  display: inline-block;
+  cursor: default;
+}
+
+/* ══════════════════════════════════════════
+   PERIOD CLOSE SECTION STYLE
+   ══════════════════════════════════════════ */
+.pclose {
+  background: linear-gradient(135deg, rgba(122,0,18,.06), rgba(193,18,31,.03)) !important;
+  border: 1px solid rgba(193,18,31,.18) !important;
+  border-radius: 14px !important;
+  padding: 20px !important;
+}
+
+/* ══════════════════════════════════════════
+   VAULT LOCK SCREEN ENHANCED
+   ══════════════════════════════════════════ */
+#vltLock > div > div:first-child {
+  font-size: 48px !important;
+  animation: lockFloat 3s ease-in-out infinite !important;
+}
+@keyframes lockFloat {
+  0%,100% { transform: translateY(0) rotate(-3deg); filter: drop-shadow(0 0 8px rgba(212,160,23,.3)); }
+  50%     { transform: translateY(-10px) rotate(3deg); filter: drop-shadow(0 0 20px rgba(212,160,23,.6)); }
+}
+
+/* ══════════════════════════════════════════
+   NUMBERS — TABULAR & MONO
+   ══════════════════════════════════════════ */
+.sv, .bv, .ramt, .ta, .hsum, .gpct, .cv, .fc-val, .fx-cur-val, .fx-result {
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-variant-numeric: tabular-nums !important;
+  font-feature-settings: "tnum" 1, "zero" 1 !important;
+}
+
+/* ══════════════════════════════════════════
+   AMBIENT GLOW ON INCOME/EXPENSE TOTALS
+   ══════════════════════════════════════════ */
+.sv.inc {
+  text-shadow: 0 0 20px rgba(34,197,94,0.3) !important;
+  transition: text-shadow .5s ease !important;
+}
+.sv.exp {
+  text-shadow: 0 0 20px rgba(255,77,90,0.3) !important;
+}
+
+/* ══════════════════════════════════════════
+   CHART CONTAINERS — ENHANCED
+   ══════════════════════════════════════════ */
+.chart-c, .chart-box, .goal-c {
+  border-radius: 18px !important;
+  overflow: hidden;
+}
+
+/* ══════════════════════════════════════════
+   FLOATING CALC ENHANCED
+   ══════════════════════════════════════════ */
+#floatCalcPanel {
+  border-radius: 24px !important;
+}
+.fc-btn {
+  transition: transform .15s cubic-bezier(.34,1.56,.64,1), background .15s ease !important;
+}
+.fc-btn:hover { transform: scale(1.08) !important; }
+.fc-btn:active { transform: scale(.9) !important; }
+
+/* ══════════════════════════════════════════
+   TOOLBAR BUTTONS — GLASS
+   ══════════════════════════════════════════ */
+.ttbtn {
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  transition: all .25s cubic-bezier(.34,1.56,.64,1) !important;
+}
+.ttbtn:hover {
+  transform: scale(1.08) !important;
+  border-color: var(--gold) !important;
+}
+.ttbtn:active {
+  transform: scale(.94) !important;
+}
+
+</style>
+
+<script>
+/* ════════════════════════════════════════════
+   VISUAL ENGINE v2
+   ════════════════════════════════════════════ */
+(function() {
+'use strict';
+
+function ready(fn) {
+  if (document.readyState !== 'loading') fn();
+  else document.addEventListener('DOMContentLoaded', fn);
+}
+
+ready(function() {
+
+/* ─────────────────────────────────────────
+   GRAIN OVERLAY
+───────────────────────────────────────── */
+const grain = document.createElement('div');
+grain.id = 'grainOverlay';
+document.body.appendChild(grain);
+
+/* ─────────────────────────────────────────
+   AURORA BACKGROUND
+───────────────────────────────────────── */
+function initAurora() {
+  const canvas = document.createElement('canvas');
+  canvas.id = 'auroraCanvas';
+  document.body.insertBefore(canvas, document.body.firstChild);
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Aurora orbs
+  const orbs = [
+    { x: .15, y: .2,  r: .45, color: [122,0,18],    speed: .0007, phase: 0 },
+    { x: .85, y: .75, r: .4,  color: [212,160,23],   speed: .0005, phase: 2 },
+    { x: .5,  y: .5,  r: .35, color: [193,18,31],    speed: .0009, phase: 4 },
+    { x: .25, y: .8,  r: .3,  color: [155,114,16],   speed: .0006, phase: 1 },
+    { x: .75, y: .15, r: .28, color: [80,0,12],      speed: .0008, phase: 3 },
+  ];
+
+  let t = 0;
+  function drawAurora() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    t += 1;
+    orbs.forEach(orb => {
+      const ox = (orb.x + Math.sin(t * orb.speed + orb.phase) * .12) * canvas.width;
+      const oy = (orb.y + Math.cos(t * orb.speed * .7 + orb.phase) * .1) * canvas.height;
+      const r  = orb.r * Math.max(canvas.width, canvas.height);
+      const grad = ctx.createRadialGradient(ox, oy, 0, ox, oy, r);
+      grad.addColorStop(0, `rgba(${orb.color.join(',')},0.18)`);
+      grad.addColorStop(.5, `rgba(${orb.color.join(',')},0.06)`);
+      grad.addColorStop(1, `rgba(${orb.color.join(',')},0)`);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    });
+    requestAnimationFrame(drawAurora);
+  }
+  drawAurora();
+}
+initAurora();
+
+/* ─────────────────────────────────────────
+   CURSOR LIGHT
+───────────────────────────────────────── */
+function initCursorLight() {
+  const light = document.createElement('div');
+  light.id = 'cursorLight';
+  document.body.appendChild(light);
+
+  let mx = -999, my = -999;
+  let cx = -999, cy = -999;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    // Hide on mobile (touch)
+  });
+  document.addEventListener('mouseleave', () => { light.style.opacity = '0'; });
+  document.addEventListener('mouseenter', () => { light.style.opacity = '1'; });
+
+  function animateCursor() {
+    // Smooth follow with lerp
+    cx += (mx - cx) * .08;
+    cy += (my - cy) * .08;
+    light.style.left = cx + 'px';
+    light.style.top  = cy + 'px';
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+
+  // Change glow color based on hovered element
+  document.addEventListener('mouseover', e => {
+    const el = e.target;
+    if (el.closest('.tb.ai') || el.closest('.sv.inc')) {
+      light.style.background = 'radial-gradient(circle, rgba(34,197,94,0.08) 0%, transparent 70%)';
+    } else if (el.closest('.tb.ae') || el.closest('.sv.exp') || el.closest('.txi.expense')) {
+      light.style.background = 'radial-gradient(circle, rgba(193,18,31,0.08) 0%, transparent 70%)';
+    } else if (el.closest('.ntab.on') || el.closest('.bal-card')) {
+      light.style.background = 'radial-gradient(circle, rgba(212,160,23,0.1) 0%, transparent 70%)';
+    } else {
+      light.style.background = 'radial-gradient(circle, rgba(212,160,23,0.06) 0%, transparent 70%)';
+    }
+  });
+}
+initCursorLight();
+
+/* ─────────────────────────────────────────
+   REACTIVE BACKGROUND (balance-based)
+───────────────────────────────────────── */
+const reactiveBg = document.createElement('div');
+reactiveBg.id = 'reactiveBg';
+document.body.insertBefore(reactiveBg, document.body.firstChild);
+
+function updateReactiveBg() {
+  const txs = window.txs || [];
+  const inc = txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amt,0);
+  const exp = txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amt,0);
+  const bal = inc - exp;
+  const card = document.querySelector('.bal-card');
+
+  if (bal > 0) {
+    reactiveBg.style.background = 'radial-gradient(ellipse 60% 40% at 50% 100%, rgba(21,128,61,0.04) 0%, transparent 70%)';
+    if (card) { card.classList.remove('reactive-neg'); card.classList.add('reactive-pos'); }
+  } else if (bal < 0) {
+    reactiveBg.style.background = 'radial-gradient(ellipse 60% 40% at 50% 100%, rgba(193,18,31,0.05) 0%, transparent 70%)';
+    if (card) { card.classList.remove('reactive-pos'); card.classList.add('reactive-neg'); }
+  } else {
+    reactiveBg.style.background = 'transparent';
+    if (card) { card.classList.remove('reactive-pos','reactive-neg'); }
+  }
+}
+
+// Hook into render
+const _origRender3 = window.render;
+if (_origRender3 && !window._visualPatched) {
+  window._visualPatched = true;
+  window.render = function() {
+    _origRender3.call(this);
+    setTimeout(updateReactiveBg, 100);
+  };
+}
+setTimeout(updateReactiveBg, 800);
+
+/* ─────────────────────────────────────────
+   3D CARD TILT
+───────────────────────────────────────── */
+function initCardTilt() {
+  const card = document.querySelector('.bal-card');
+  if (!card) return;
+
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top  + rect.height / 2;
+    const dx = (e.clientX - cx) / (rect.width / 2);
+    const dy = (e.clientY - cy) / (rect.height / 2);
+    const tiltX = dy * -4;   // max 4deg
+    const tiltY = dx *  4;
+    card.style.transform = `perspective(800px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(1.01)`;
+  });
+
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = 'perspective(800px) rotateX(0) rotateY(0) scale(1)';
+  });
+}
+setTimeout(initCardTilt, 600);
+
+// Re-init on dashboard switch
+const _origSw = window.sw;
+if (_origSw) {
+  window.sw = function(name, el) {
+    _origSw(name, el);
+    if (name === 'dashboard') setTimeout(initCardTilt, 100);
+  };
+}
+
+/* ─────────────────────────────────────────
+   STAGGERED LIST ANIMATION
+───────────────────────────────────────── */
+function staggerList(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const items = container.querySelectorAll('.txi, .hi, .vlt-card, .ri');
+  items.forEach((item, i) => {
+    item.style.animationDelay = (i * 40) + 'ms';
+  });
+}
+
+// Observer for list changes
+['txList','recentList','histList','vltList'].forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  new MutationObserver(() => staggerList(id)).observe(el, { childList: true });
+});
+
+/* ─────────────────────────────────────────
+   CATEGORY DOT COLORS
+───────────────────────────────────────── */
+const catColors = {
+  'Activation': '#7C3AED',
+  'Eldorado': '#D4A017',
+  'Steam Games': '#1b9fd1',
+  'Steam Gift Cards': '#0e7aad',
+  'Valorant Points': '#FF4655',
+  'Subscriptions': '#F59E0B',
+  'Other': '#6B7280',
+};
+
+function applyCatDotColors() {
+  document.querySelectorAll('.tcat').forEach(el => {
+    const cat = el.textContent.trim();
+    const color = catColors[cat] || 'var(--gold)';
+    el.style.setProperty('--cat-dot-color', color);
+    const pseudo = el.querySelector('::before');
+    // Use data attribute instead since we can't directly style ::before with JS
+    el.setAttribute('data-color', color);
+    el.style.color = color;
+  });
+}
+
+// Watch for DOM changes
+const txObserver2 = new MutationObserver(applyCatDotColors);
+['txList','recentList'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) txObserver2.observe(el, { childList: true, subtree: true });
+});
+
+/* ─────────────────────────────────────────
+   SMOOTH NUMBER TRANSITIONS for stats
+───────────────────────────────────────── */
+function addStatGlow() {
+  const incEl = document.getElementById('totInc');
+  const expEl = document.getElementById('totExp');
+
+  if (incEl) {
+    const observer = new MutationObserver(() => {
+      incEl.style.filter = 'brightness(1.3)';
+      setTimeout(() => incEl.style.filter = '', 400);
+    });
+    observer.observe(incEl, { childList: true, characterData: true, subtree: true });
+  }
+}
+setTimeout(addStatGlow, 1000);
+
+/* ─────────────────────────────────────────
+   FLOATING LABEL REORDER (CSS sibling trick)
+───────────────────────────────────────── */
+function initFloatingLabels() {
+  document.querySelectorAll('.fg').forEach(group => {
+    const input = group.querySelector('input:not([type="date"]):not([type="number"]), textarea');
+    const label = group.querySelector('label');
+    if (!input || !label) return;
+
+    // Add placeholder space to trigger CSS sibling selector
+    if (!input.placeholder) input.placeholder = ' ';
+
+    // Ensure label comes after input in DOM for CSS sibling selector
+    if (input.nextElementSibling !== label) {
+      group.appendChild(label);
+    }
+  });
+}
+setTimeout(initFloatingLabels, 400);
+
+/* ─────────────────────────────────────────
+   BUTTON RIPPLE ENHANCED
+───────────────────────────────────────── */
+function addRippleEnhanced(e, el) {
+  const existing = el.querySelectorAll('.v2-ripple');
+  existing.forEach(r => r.remove());
+
+  const rect = el.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height) * 2;
+  const x = e.clientX - rect.left - size/2;
+  const y = e.clientY - rect.top  - size/2;
+
+  const ripple = document.createElement('span');
+  ripple.className = 'v2-ripple';
+  ripple.style.cssText = `
+    position:absolute;
+    width:${size}px;height:${size}px;
+    left:${x}px;top:${y}px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.18);
+    transform:scale(0);
+    animation:v2RippleOut .6s ease-out forwards;
+    pointer-events:none;
+    z-index:10;
+  `;
+
+  if (!document.getElementById('v2RippleStyle')) {
+    const style = document.createElement('style');
+    style.id = 'v2RippleStyle';
+    style.textContent = '@keyframes v2RippleOut{to{transform:scale(1);opacity:0}}';
+    document.head.appendChild(style);
+  }
+
+  el.style.position = el.style.position || 'relative';
+  el.style.overflow = 'hidden';
+  el.appendChild(ripple);
+  ripple.addEventListener('animationend', () => ripple.remove());
+}
+
+document.addEventListener('click', e => {
+  const btn = e.target.closest(
+    '.bsub,.btn-login,.bg,.fx-btn,.set-btn-gold,.set-btn-red,.bcancel,.bsave,.bconfirm,.bcp,.vlt-add-btn,.ntab,.cb,.fc-btn'
+  );
+  if (btn) addRippleEnhanced(e, btn);
+}, true);
+
+/* ─────────────────────────────────────────
+   SCROLL-TRIGGERED ANIMATIONS
+───────────────────────────────────────── */
+function initScrollReveal() {
+  if (!window.IntersectionObserver) return;
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: .1 });
+
+  function observeItems() {
+    document.querySelectorAll('.hi, .chart-c, .chart-box, .goal-c, .set-card, .grp-card').forEach(el => {
+      if (!el.dataset.observed) {
+        el.dataset.observed = '1';
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity .5s ease, transform .5s cubic-bezier(.22,.68,0,1.2)';
+        observer.observe(el);
+      }
+    });
+  }
+
+  observeItems();
+  // Re-observe after route changes
+  setInterval(observeItems, 1500);
+}
+setTimeout(initScrollReveal, 800);
+
+/* ─────────────────────────────────────────
+   AURORA PULSE ON TRANSACTION ADD
+───────────────────────────────────────── */
+const _origAddTx = window.addTx;
+if (_origAddTx) {
+  window.addTx = async function() {
+    await _origAddTx.call(this);
+    // Flash aurora
+    const canvas = document.getElementById('auroraCanvas');
+    if (canvas) {
+      canvas.style.transition = 'opacity .15s ease';
+      canvas.style.opacity = '0.85';
+      setTimeout(() => {
+        canvas.style.opacity = '0.55';
+        canvas.style.transition = 'opacity .8s ease';
+      }, 150);
+    }
+  };
+}
+
+/* ─────────────────────────────────────────
+   CUSTOM CURSOR (subtle star trail — desktop)
+───────────────────────────────────────── */
+let trailActive = false;
+document.addEventListener('mousemove', e => {
+  if (Math.random() > 0.85) {
+    const star = document.createElement('div');
+    star.textContent = '·';
+    star.style.cssText = `
+      position:fixed;left:${e.clientX}px;top:${e.clientY}px;
+      color:rgba(212,160,23,0.4);font-size:${6+Math.random()*8}px;
+      pointer-events:none;z-index:9999;
+      animation:starFade .6s ease forwards;
+      transform:translate(-50%,-50%);
+    `;
+    document.body.appendChild(star);
+    setTimeout(() => star.remove(), 600);
+  }
+});
+
+if (!document.getElementById('starFadeStyle')) {
+  const s = document.createElement('style');
+  s.id = 'starFadeStyle';
+  s.textContent = '@keyframes starFade{from{opacity:.7;transform:translate(-50%,-50%) scale(1)}to{opacity:0;transform:translate(-50%,-80%) scale(.3)}}';
+  document.head.appendChild(s);
+}
+
+/* ─────────────────────────────────────────
+   PAGE LOADED — Remove loading shimmer
+───────────────────────────────────────── */
+setTimeout(() => {
+  updateReactiveBg();
+  initCardTilt();
+  applyCatDotColors();
+}, 1200);
+
+}); // end ready()
+})();
+</script>
+
+</body> في hizb_finance.html
      ═══════════════════════════════════════════════════════ -->
 
 <style>
