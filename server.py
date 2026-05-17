@@ -697,7 +697,32 @@ def backup_db():
 # ═══════════════════════════════════════════════════════════════════════
 BOT_API_KEY = os.environ.get('BOT_API_KEY', 'changeme-secret-key')
 
-@app.route('/api/bot/income', methods=['POST', 'OPTIONS'])
+# ─── in-memory store للتيكيتس المفتوحة (يتحدث من البوت) ──────────────
+_open_tickets = {}   # { channel_id: { name, game, client, opened_at, status } }
+
+@app.route('/api/bot/tickets', methods=['POST', 'OPTIONS'])
+def bot_update_tickets():
+    """
+    البوت بيبعت قائمة التيكيتس المفتوحة كاملة كل شوية.
+    Body JSON: { tickets: [ { id, name, game, client, opened_at, status } ] }
+    """
+    if request.method == 'OPTIONS': return make_response('', 200)
+    if request.headers.get('X-Bot-Key','') != BOT_API_KEY:
+        return jsonify({'error': 'Unauthorized'}), 401
+    data = request.get_json(force=True)
+    tickets = data.get('tickets', [])
+    global _open_tickets
+    _open_tickets = { str(t['id']): t for t in tickets }
+    return jsonify({'ok': True, 'count': len(_open_tickets)})
+
+@app.route('/api/bot/tickets', methods=['GET', 'OPTIONS'])
+@require_auth
+def get_open_tickets():
+    """الموقع يجيب التيكيتس المفتوحة — للستاف بس"""
+    if request.method == 'OPTIONS': return make_response('', 200)
+    return jsonify(list(_open_tickets.values()))
+
+
 def bot_income():
     """
     يستقبل income من البوت بعد إغلاق التيكيت.
