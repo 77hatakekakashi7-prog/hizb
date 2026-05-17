@@ -963,6 +963,42 @@ h1 .typing-cursor{
 }
 
 
+/* ─── DISCORD TICKETS ─── */
+#sec-tickets{display:none}
+.tk-toolbar{display:flex;gap:8px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+.tk-search{flex:1;min-width:160px;background:var(--s2);border:1px solid var(--bdr);border-radius:10px;padding:9px 14px;color:var(--txt);font-family:var(--arabic);font-size:13px;outline:none;transition:border-color .2s}
+.tk-search:focus{border-color:var(--gold-d)}
+.tk-filter{padding:9px 14px;border-radius:10px;border:1px solid var(--bdr);background:var(--s2);color:var(--txt);font-family:var(--arabic);font-size:12px;cursor:pointer;transition:all .2s}
+.tk-filter.on{background:rgba(212,160,23,.12);border-color:var(--gold-d);color:var(--gold)}
+.tk-refresh{padding:9px 14px;border-radius:10px;border:1px solid var(--bdr2);background:transparent;color:var(--gold);font-size:13px;cursor:pointer;transition:all .2s;font-family:var(--arabic)}
+.tk-refresh:hover{background:rgba(212,160,23,.1)}
+.tk-refresh.spinning{animation:tkSpin .7s linear infinite}
+@keyframes tkSpin{to{transform:rotate(360deg)}}
+.tk-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.tk-stat{background:var(--s1);border:1px solid var(--bdr);border-radius:12px;padding:12px;text-align:center}
+.tk-stat-n{font-size:22px;font-weight:700;font-family:var(--mono)}
+.tk-stat-l{font-size:11px;color:var(--muted);margin-top:2px}
+.tk-grid{display:flex;flex-direction:column;gap:8px}
+.tk-card{background:var(--s1);border:1px solid var(--bdr);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;transition:border-color .2s,transform .15s;cursor:default}
+.tk-card:hover{border-color:var(--bdr2);transform:translateY(-1px)}
+.tk-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.tk-dot.open{background:#6366f1;box-shadow:0 0 6px rgba(99,102,241,.5)}
+.tk-dot.pending{background:var(--gold);box-shadow:0 0 6px rgba(212,160,23,.5)}
+.tk-dot.in_progress{background:#3b82f6;box-shadow:0 0 6px rgba(59,130,246,.5)}
+.tk-dot.completed{background:var(--green-l);box-shadow:0 0 6px rgba(34,197,94,.5)}
+.tk-info{flex:1;min-width:0}
+.tk-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tk-meta{font-size:11px;color:var(--muted);margin-top:3px}
+.tk-badge{font-size:10px;padding:3px 9px;border-radius:20px;font-family:var(--arabic);white-space:nowrap;flex-shrink:0}
+.tk-badge.open{background:rgba(99,102,241,.15);color:#818cf8;border:1px solid rgba(99,102,241,.3)}
+.tk-badge.pending{background:rgba(212,160,23,.12);color:var(--gold);border:1px solid rgba(212,160,23,.3)}
+.tk-badge.in_progress{background:rgba(59,130,246,.12);color:#60a5fa;border:1px solid rgba(59,130,246,.3)}
+.tk-badge.completed{background:rgba(34,197,94,.12);color:var(--green-l);border:1px solid rgba(34,197,94,.3)}
+.tk-jump{padding:5px 12px;border-radius:8px;background:rgba(212,160,23,.1);border:1px solid var(--bdr2);color:var(--gold);font-size:11px;text-decoration:none;transition:all .2s;flex-shrink:0;font-family:var(--arabic)}
+.tk-jump:hover{background:rgba(212,160,23,.2)}
+.tk-empty{text-align:center;padding:48px 20px;color:var(--muted);font-size:14px}
+.tk-last{font-size:11px;color:var(--muted);text-align:center;margin-top:10px}
+@media(max-width:600px){.tk-stats{grid-template-columns:repeat(2,1fr)}.tk-jump{display:none}}
 </style>
 </head>
 <body>
@@ -1086,6 +1122,7 @@ h1 .typing-cursor{
     <button class="ntab" onclick="sw('vault',this)" data-ar="🔐 الحسابات" data-en="🔐 Vault">🔐 الحسابات</button>
     <button class="ntab" onclick="sw('goals',this)" data-ar="🎯 الأهداف" data-en="🎯 Goals">🎯 الأهداف</button>
     <button class="ntab" onclick="sw('history',this)" data-ar="🗂 التاريخ" data-en="🗂 History">🗂 التاريخ</button>
+    <button class="ntab" onclick="sw('tickets',this)" data-ar="🎫 التيكيتس" data-en="🎫 Tickets">🎫 التيكيتس</button>
     <button class="ntab" onclick="sw('settings',this)" data-ar="⚙️ الإعدادات" data-en="⚙️ Settings">⚙️ الإعدادات</button>
   </div>
 
@@ -1547,6 +1584,30 @@ h1 .typing-cursor{
     <div class="section-label" id="histLabel">الفترات المؤرشفة</div>
     <div id="histList"><div class="empty" data-ar="لا توجد فترات مؤرشفة بعد" data-en="No archived periods yet">لا توجد فترات مؤرشفة بعد</div></div>
   </div>
+
+  <!-- ═══════════ DISCORD TICKETS ═══════════ -->
+  <div id="tc-tickets" class="tc">
+    <div class="tk-stats">
+      <div class="tk-stat"><div class="tk-stat-n" id="tkCountAll" style="color:var(--gold)">—</div><div class="tk-stat-l">الكل</div></div>
+      <div class="tk-stat"><div class="tk-stat-n" id="tkCountOpen" style="color:#818cf8">—</div><div class="tk-stat-l">مفتوح</div></div>
+      <div class="tk-stat"><div class="tk-stat-n" id="tkCountProg" style="color:#60a5fa">—</div><div class="tk-stat-l">قيد التنفيذ</div></div>
+      <div class="tk-stat"><div class="tk-stat-n" id="tkCountDone" style="color:var(--green-l)">—</div><div class="tk-stat-l">مكتمل</div></div>
+    </div>
+    <div class="tk-toolbar">
+      <input class="tk-search" id="tkSearch" placeholder="🔍 ابحث باسم اللعبة أو العميل..." oninput="tkRender()"/>
+      <button class="tk-filter on" id="tkF-all"       onclick="tkSetFilter('all',this)">الكل</button>
+      <button class="tk-filter"    id="tkF-open"      onclick="tkSetFilter('open',this)">🟣 مفتوح</button>
+      <button class="tk-filter"    id="tkF-pending"   onclick="tkSetFilter('pending',this)">🟡 انتظار</button>
+      <button class="tk-filter"    id="tkF-in_progress" onclick="tkSetFilter('in_progress',this)">🔵 تنفيذ</button>
+      <button class="tk-filter"    id="tkF-completed" onclick="tkSetFilter('completed',this)">🟢 مكتمل</button>
+      <button class="tk-refresh" id="tkRefreshBtn" onclick="tkLoad()" title="تحديث">🔄</button>
+    </div>
+    <div class="tk-grid" id="tkGrid">
+      <div class="tk-empty">جارٍ التحميل...</div>
+    </div>
+    <div class="tk-last" id="tkLastUpdate"></div>
+  </div>
+
 </div>
 
 <!-- VAULT: ADD / EDIT ACCOUNT MODAL -->
@@ -2208,6 +2269,7 @@ function sw(name, el) {
   if(name==='currency') { fxConvert(); fxRenderGrid(); }
   if(name==='vault') vltInit();
   if(name==='settings') sInitProfile();
+  if(name==='tickets') tkStartAutoRefresh(); else tkStopAutoRefresh();
   // Sync mobile bottom nav
   const mbnIds = {dashboard:'mbn-dashboard',transactions:'mbn-transactions',charts:'mbn-charts',vault:'mbn-vault'};
   document.querySelectorAll('.mbn-item').forEach(b=>b.classList.remove('on'));
@@ -3934,6 +3996,111 @@ initTypingTitle();
   }
   checkServer();
 })();
+
+/* ════════════════════════════════════════════
+   DISCORD TICKETS — realtime view
+   ════════════════════════════════════════════ */
+let _tkData      = [];
+let _tkFilter    = 'all';
+let _tkInterval  = null;
+
+async function tkLoad() {
+  const btn = document.getElementById('tkRefreshBtn');
+  if (btn) btn.classList.add('spinning');
+  try {
+    const r = await apiCall('GET', '/api/bot/tickets');
+    if (!r || !r.ok) return;
+    _tkData = await r.json();
+    tkUpdateStats();
+    tkRender();
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('ar-EG', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    const el = document.getElementById('tkLastUpdate');
+    if (el) el.textContent = `آخر تحديث: ${timeStr}`;
+  } catch(e) {
+    console.warn('Tickets load error:', e);
+  } finally {
+    if (btn) setTimeout(()=>btn.classList.remove('spinning'), 600);
+  }
+}
+
+function tkUpdateStats() {
+  const all  = _tkData.length;
+  const open = _tkData.filter(t=>t.status==='open').length;
+  const prog = _tkData.filter(t=>t.status==='in_progress').length;
+  const done = _tkData.filter(t=>t.status==='completed').length;
+  document.getElementById('tkCountAll').textContent  = all;
+  document.getElementById('tkCountOpen').textContent = open;
+  document.getElementById('tkCountProg').textContent = prog;
+  document.getElementById('tkCountDone').textContent = done;
+}
+
+function tkSetFilter(f, el) {
+  _tkFilter = f;
+  document.querySelectorAll('.tk-filter').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  tkRender();
+}
+
+function tkStatusLabel(s) {
+  const map = { open:'مفتوح', pending:'انتظار', in_progress:'قيد التنفيذ', completed:'مكتمل' };
+  return map[s] || s;
+}
+
+function tkTimeAgo(isoStr) {
+  try {
+    const diff = Math.floor((Date.now() - new Date(isoStr).getTime()) / 1000);
+    if (diff < 60)   return `منذ ${diff} ث`;
+    if (diff < 3600) return `منذ ${Math.floor(diff/60)} د`;
+    if (diff < 86400)return `منذ ${Math.floor(diff/3600)} س`;
+    return `منذ ${Math.floor(diff/86400)} يوم`;
+  } catch { return '—'; }
+}
+
+function tkRender() {
+  const query = (document.getElementById('tkSearch')?.value || '').toLowerCase().trim();
+  const grid  = document.getElementById('tkGrid');
+  if (!grid) return;
+
+  let filtered = _tkData;
+  if (_tkFilter !== 'all') filtered = filtered.filter(t=>t.status===_tkFilter);
+  if (query) filtered = filtered.filter(t=>
+    t.game?.toLowerCase().includes(query) ||
+    t.client?.toLowerCase().includes(query) ||
+    t.name?.toLowerCase().includes(query)
+  );
+
+  // ترتيب: open أولاً ثم in_progress ثم pending ثم completed
+  const order = {open:0,in_progress:1,pending:2,completed:3};
+  filtered.sort((a,b)=>(order[a.status]??9)-(order[b.status]??9));
+
+  if (!filtered.length) {
+    grid.innerHTML = `<div class="tk-empty">🎫 لا توجد تيكيتس ${_tkFilter!=='all'?'في هذه الحالة':''}</div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(t => `
+    <div class="tk-card">
+      <div class="tk-dot ${t.status}"></div>
+      <div class="tk-info">
+        <div class="tk-name">🎮 ${t.game} — <span style="color:var(--gold)">${t.client}</span></div>
+        <div class="tk-meta">${t.category} &nbsp;·&nbsp; ${tkTimeAgo(t.opened_at)}</div>
+      </div>
+      <span class="tk-badge ${t.status}">${tkStatusLabel(t.status)}</span>
+      ${t.jump_url ? `<a class="tk-jump" href="${t.jump_url}" target="_blank">فتح ↗</a>` : ''}
+    </div>
+  `).join('');
+}
+
+// تحديث أوتو كل 30 ثانية لما تاب التيكيتس مفتوح
+function tkStartAutoRefresh() {
+  tkLoad();
+  if (_tkInterval) clearInterval(_tkInterval);
+  _tkInterval = setInterval(tkLoad, 30000);
+}
+function tkStopAutoRefresh() {
+  if (_tkInterval) { clearInterval(_tkInterval); _tkInterval = null; }
+}
 </script>
 
 <!-- TX BATTERY PROGRESS OVERLAY -->
