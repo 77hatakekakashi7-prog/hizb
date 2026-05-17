@@ -693,6 +693,59 @@ def backup_db():
                      mimetype='application/octet-stream')
 
 # ═══════════════════════════════════════════════════════════════════════
+# BOT INCOME ENDPOINT — يُستخدم من Discord Bot فقط
+# ═══════════════════════════════════════════════════════════════════════
+BOT_API_KEY = os.environ.get('BOT_API_KEY', 'changeme-secret-key')
+
+@app.route('/api/bot/income', methods=['POST', 'OPTIONS'])
+def bot_income():
+    """
+    يستقبل income من البوت بعد إغلاق التيكيت.
+    Headers: X-Bot-Key: <BOT_API_KEY>
+    Body JSON: { amt, dsc, cat, note, username }
+        username = اسم المستخدم في الموقع اللي هيتسجل باسمه
+    """
+    if request.method == 'OPTIONS':
+        return make_response('', 200)
+
+    # ── التحقق من الـ API Key ──
+    key = request.headers.get('X-Bot-Key', '')
+    if key != BOT_API_KEY:
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    d = request.get_json(force=True)
+    amt      = float(d.get('amt', 0))
+    dsc      = d.get('dsc', '').strip()
+    cat      = d.get('cat', 'Discord Sales').strip()
+    note     = d.get('note', '').strip()
+    username = d.get('username', 'admin').strip()
+    dt       = datetime.now().strftime('%Y-%m-%d')
+
+    if amt <= 0 or not dsc:
+        return jsonify({'error': 'amt و dsc مطلوبان'}), 400
+
+    with get_db() as db:
+        # نجيب الـ user_id من الـ username
+        user = db.execute("SELECT id FROM users WHERE username=?", (username,)).fetchone()
+        if not user:
+            # fallback على admin
+            user = db.execute("SELECT id FROM users WHERE role='admin' LIMIT 1").fetchone()
+        if not user:
+            return jsonify({'error': 'لا يوجد مستخدم'}), 500
+
+        uid = user['id']
+        gid, _ = get_scope(db, uid)
+
+        db.execute(
+            "INSERT INTO transactions(user_id, group_id, type, amt, dsc, cat, dt, note) "
+            "VALUES(?, ?, 'income', ?, ?, ?, ?, ?)",
+            (uid, gid, amt, dsc, cat, dt, note)
+        )
+        db.commit()
+
+    return jsonify({'ok': True, 'recorded': {'amt': amt, 'dsc': dsc, 'cat': cat}}), 201
+
+# ═══════════════════════════════════════════════════════════════════════
 # CHANGE USERNAME / PASSWORD
 # ═══════════════════════════════════════════════════════════════════════
 @app.route('/api/change-username', methods=['POST', 'OPTIONS'])
