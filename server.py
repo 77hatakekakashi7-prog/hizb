@@ -723,6 +723,7 @@ def get_open_tickets():
     return jsonify(list(_open_tickets.values()))
 
 
+@app.route('/api/bot/income', methods=['POST', 'OPTIONS'])
 def bot_income():
     """
     يستقبل income من البوت بعد إغلاق التيكيت.
