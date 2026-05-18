@@ -985,9 +985,16 @@ h1 .typing-cursor{
 .kb-col-title{font-size:12px;font-weight:700;letter-spacing:.5px;display:flex;align-items:center;gap:7px}
 .kb-col-count{font-size:11px;font-family:var(--mono);background:var(--s2);border-radius:20px;padding:2px 8px;color:var(--muted)}
 .kb-cards{padding:8px;display:flex;flex-direction:column;gap:7px;min-height:80px}
-.kb-card{background:var(--s2);border:1px solid var(--bdr);border-radius:10px;padding:11px 12px;transition:border-color .2s,transform .15s,box-shadow .2s;cursor:default;animation:kbIn .25s ease both}
+.kb-card{background:var(--s2);border:1px solid var(--bdr);border-radius:10px;padding:11px 12px;transition:border-color .2s,transform .15s,box-shadow .2s;cursor:default;animation:kbIn .25s ease both;position:relative}
 @keyframes kbIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .kb-card:hover{border-color:var(--bdr2);transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.kb-tooltip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#0a0a18;border:1px solid var(--bdr2);border-radius:10px;padding:10px 14px;min-width:200px;max-width:260px;z-index:100;pointer-events:none;opacity:0;transition:opacity .18s;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.kb-card:hover .kb-tooltip{opacity:1}
+.kb-tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#0a0a18}
+.kb-tt-row{display:flex;justify-content:space-between;gap:8px;font-size:11px;margin-bottom:5px}
+.kb-tt-row:last-child{margin-bottom:0}
+.kb-tt-label{color:var(--muted);white-space:nowrap}
+.kb-tt-val{color:var(--txt);font-weight:600;text-align:right;word-break:break-word}
 .kb-game{font-size:13px;font-weight:700;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kb-client{font-size:11px;color:var(--gold);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kb-footer{display:flex;align-items:center;justify-content:space-between;gap:6px}
@@ -4104,8 +4111,19 @@ function tkTimeAgo(isoStr) {
 }
 
 function tkCardHTML(t) {
+  const openedFull = t.opened_at ? new Date(t.opened_at).toLocaleString('ar-EG', {
+    year:'numeric', month:'long', day:'numeric',
+    hour:'2-digit', minute:'2-digit'
+  }) : '—';
+
   return `
   <div class="kb-card">
+    <div class="kb-tooltip">
+      <div class="kb-tt-row"><span class="kb-tt-label">📅 وقت الفتح</span><span class="kb-tt-val">${openedFull}</span></div>
+      <div class="kb-tt-row"><span class="kb-tt-label">📂 الكاتيجوري</span><span class="kb-tt-val">${t.category || '—'}</span></div>
+      <div class="kb-tt-row"><span class="kb-tt-label">🎮 اللعبة</span><span class="kb-tt-val">${t.game || '—'}</span></div>
+      <div class="kb-tt-row"><span class="kb-tt-label">👤 العميل</span><span class="kb-tt-val">${t.client || '—'}</span></div>
+    </div>
     <div class="kb-game">🎮 ${t.game || '—'}</div>
     <div class="kb-client">👤 ${t.client || '—'}</div>
     <div class="kb-cat">📂 ${t.category || '—'}</div>
